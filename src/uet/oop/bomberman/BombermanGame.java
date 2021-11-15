@@ -23,11 +23,13 @@ public class BombermanGame extends Application {
     public static final int HEIGHT = 13;
     public static final int SCREEN_FPS = 60;
     public static final int SCREEN_TICKS_PER_FRAME = 1000000000 / SCREEN_FPS;
+    boolean startGame = true;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     private List<Entity> stillObjects = new ArrayList<>();
+    private List<Entity> map = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -53,13 +55,26 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                render();
+                long nextDrawTime = l + SCREEN_TICKS_PER_FRAME;
                 update();
+                render();
+                try {
+                    double remainingTime = nextDrawTime - l;
+                    remainingTime = remainingTime / 1000000;
+
+                    if (remainingTime < 0) {
+                        remainingTime = 0;
+                    }
+
+                    Thread.sleep((long) remainingTime);
+                    nextDrawTime += SCREEN_TICKS_PER_FRAME;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         };
         timer.start();
         createMap();
-
         //Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         //entities.add(bomberman);
     }
@@ -75,36 +90,52 @@ public class BombermanGame extends Application {
                 Entity object;
                 Entity object2;
                 object2 = new Grass(j, i, Sprite.grass[0][1].getFxImage());
-                stillObjects.add(object2);
+                map.add(object2);
                 if (s.charAt(j) == '#') {
                     if (i == 0 || i == HEIGHT - 1 || j == 0 || j == WIDTH - 1) {
                         object = new Wall(j, i, Sprite.wall[0][1].getFxImage());
+                        map.add(object);
                     } else if ((i + j) % 5 == 1) {
-                        object = new Wall(j, i, Sprite.wall[0][6].getFxImage());
+                        object = new Wall(j, i, Sprite.wall[0][7].getFxImage());
+                        map.add(object);
                     } else {
                         object = new Wall(j, i, Sprite.wall[0][3].getFxImage());
+                        map.add(object);
                     }
                 } else if (s.charAt(j) == 'p') {
                     object = new Bomber(j, i, Sprite.player_1[0][2].getFxImage());
+                    entities.add(object);
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
+                    stillObjects.add(object);
                 } else if (s.charAt(j) == '2') {
                     object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    stillObjects.add(object);
                 } else if (s.charAt(j) == '*') {
-                    object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
+                    if ((i + j) % 2 == 0) {
+                        object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
+                        map.add(object);
+                    } else {
+                        object = new Brick(j, i, Sprite.wall[0][6].getFxImage());
+                        map.add(object);
+                    }
+
                 } else if (s.charAt(j) == 'x') {
                     object = new Portal(j, i, Sprite.wall[0][4].getFxImage());
+                    map.add(object);
                 } else if (s.charAt(j) == 'f') {
                     object = new FlameItem(j, i, Sprite.items[2][2].getFxImage());
+                    map.add(object);
                 } else if (s.charAt(j) == 'b') {
                     object = new BombItem(j, i, Sprite.items[1][2].getFxImage());
+                    map.add(object);
                 } else if (s.charAt(j) == 's') {
                     object = new BombItem(j, i, Sprite.items[0][2].getFxImage());
+                    map.add(object);
                 } else {
                     object = new Grass(j, i, Sprite.grass[0][1].getFxImage());
+                    map.add(object);
                 }
-                object2 = new Grass(j, i, Sprite.grass[0][1].getFxImage());
-                stillObjects.add(object);
             }
             i++;
         }
@@ -112,12 +143,14 @@ public class BombermanGame extends Application {
 
     public void update() {
         entities.forEach(Entity::update);
+        stillObjects.forEach(Entity::update);
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
+        map.forEach(g -> g.render(gc));
         entities.forEach(g -> g.render(gc));
+        stillObjects.forEach(g -> g.render(gc));
     }
 }
 /**

@@ -18,7 +18,6 @@ public class SpriteSheet {
 	public BufferedImage image;
 
 	public static SpriteSheet all = new SpriteSheet("/textures/classic.png",1920 , 1080);
-	//public static SpriteSheet character1 = new SpriteSheet("/asset/character/player2.png", 300, 228);
 
 	public SpriteSheet(String path, int l, int h) {
 		_path = path;
