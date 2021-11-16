@@ -7,11 +7,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.awt.*;
+
 public abstract class Entity {
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     //Tọa độ X tính từ góc trái trên trong Canvas
     protected int x;
+    public String direction = "right";
+    private int speed = 1;
+    public Rectangle soliArea;
     //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int y;
+    public boolean collisionOn = false;
+    public boolean collision = false;
 
     protected Image img;
 
@@ -20,6 +35,9 @@ public abstract class Entity {
         this.x = xUnit * Sprite.SCALED_SIZE;
         this.y = (int) (yUnit * Sprite.SCALED_SIZE - (img.getHeight() - 40));
         this.img = img;
+    }
+    public int getSpeed() {
+        return speed;
     }
 
     public void render(GraphicsContext gc) {
