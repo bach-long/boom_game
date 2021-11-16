@@ -15,10 +15,10 @@ public class Balloon extends Entity {
     @Override
     public void update() {
         soliArea = new Rectangle();
-        soliArea.x = 0;
-        soliArea.y = (int) (img.getHeight() - 40);
-        soliArea.width = 39;
-        soliArea.height = 39;
+        soliArea.x = 2;
+        soliArea.y = (int) (img.getHeight() - 38);
+        soliArea.width = 36;
+        soliArea.height = 36;
         collisionOn = false;
         CollisionChecker.gp.cChecker.checkTile(this);
         if (!collisionOn) {
@@ -31,8 +31,10 @@ public class Balloon extends Entity {
                     break;
                 case "left":
                     this.x -= speed;
+                    break;
                 case "right":
                     this.x += speed;
+                    break;
             }
         }
     }

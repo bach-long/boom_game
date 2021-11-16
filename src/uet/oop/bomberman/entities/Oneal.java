@@ -8,20 +8,19 @@ import java.awt.*;
 public class Oneal extends Entity {
     private int speed = 1;
     private int spriteCounter = 0;
-    boolean left = false, up = false, right = false, down = false;
     public Oneal(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
     @Override
     public void update() {
-
         soliArea = new Rectangle();
-        soliArea.x = 0;
-        soliArea.y = (int) (img.getHeight() - 40);
-        soliArea.width = 39;
-        soliArea.height = 39;
+        soliArea.x = 2;
+        soliArea.y = (int) (img.getHeight() - 38);
+        soliArea.width = 36;
+        soliArea.height = 36;
         collisionOn = false;
+        //direction = "left";
         CollisionChecker.gp.cChecker.checkTile(this);
         if (!collisionOn) {
             switch (direction) {
@@ -33,8 +32,10 @@ public class Oneal extends Entity {
                     break;
                 case "left":
                     this.x -= speed;
+                    break;
                 case "right":
                     this.x += speed;
+                    break;
             }
         }
     }

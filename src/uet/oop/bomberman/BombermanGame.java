@@ -124,7 +124,7 @@ public class BombermanGame extends Application {
                         object = new Brick(j, i, Sprite.wall[0][6].getFxImage());
                         tile[i][j] = object;
                     }
-                    tile[i][j].collision = true;
+                    object.collision = true;
                 } else if (s.charAt(j) == 'x') {
                     object = new Portal(j, i, Sprite.wall[0][4].getFxImage());
                     tile[i][j] = object;

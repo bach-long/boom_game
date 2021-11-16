@@ -10,17 +10,9 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.awt.*;
 
 public abstract class Entity {
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
     //Tọa độ X tính từ góc trái trên trong Canvas
     protected int x;
-    public String direction = "right";
+    public String direction = "down";
     private int speed = 1;
     public Rectangle soliArea;
     //Tọa độ Y tính từ góc trái trên trong Canvas
@@ -44,4 +36,11 @@ public abstract class Entity {
         gc.drawImage(img, x, y);
     }
     public abstract void update();
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
+    }
+
 }
