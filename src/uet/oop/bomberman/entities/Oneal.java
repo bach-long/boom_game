@@ -1,7 +1,9 @@
 package uet.oop.bomberman.entities;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Collision.CollisionChecker;
+import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
 
@@ -14,27 +16,49 @@ public class Oneal extends Entity {
 
     @Override
     public void update() {
-        soliArea = new Rectangle();
-        soliArea.x = 2;
-        soliArea.y = (int) (img.getHeight() - 38);
-        soliArea.width = 36;
-        soliArea.height = 36;
         collisionOn = false;
-        //direction = "left";
         CollisionChecker.gp.cChecker.checkTile(this);
-        if (!collisionOn) {
+        if (collisionOn) {
+            posReturn();
+            switch (direction) {
+                case "up":
+                    direction = "down";
+                    break;
+                case "down":
+                    direction = "up";
+                    break;
+                case "right" :
+                    direction = "left";
+                    break;
+                case "left":
+                    direction = "right";
+                    break;
+            }
+        } else {
             switch (direction) {
                 case "up":
                     this.y -= speed;
+                    setImg(Sprite.crep1[0][0].getFxImage());
+                    updatePosMap();
+                    checkReturn();
                     break;
                 case "down":
                     this.y += speed;
+                    setImg(Sprite.crep1[0][3].getFxImage());
+                    updatePosMap();
+                    checkReturn();
                     break;
                 case "left":
                     this.x -= speed;
+                    setImg(Sprite.crep1[0][2].getFxImage());
+                    updatePosMap();
+                    checkReturn();
                     break;
                 case "right":
                     this.x += speed;
+                    setImg(Sprite.crep1[0][1].getFxImage());
+                    updatePosMap();
+                    checkReturn();
                     break;
             }
         }

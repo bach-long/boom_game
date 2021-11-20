@@ -29,12 +29,13 @@ public class BombermanGame extends Application {
     private GraphicsContext gc;
     public CollisionChecker cChecker = new CollisionChecker(this);
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
-    public List<Entity> map = new ArrayList<>();
-    public List<Entity> grass = new ArrayList<>();
+    public static List<Entity> grass = new ArrayList<>();
     public int[][] saveMap = new int[HEIGHT][WIDTH];
-    public Entity[][] tile = new Entity[HEIGHT][WIDTH];
+    public static Entity[][] tile = new Entity[HEIGHT][WIDTH];
+    Bomber character = null;
+    boolean creatMap = true;
+
+
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
@@ -44,14 +45,12 @@ public class BombermanGame extends Application {
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
-
         // Tao root container
         Group root = new Group();
         root.getChildren().add(canvas);
 
         // Tao scene
         Scene scene = new Scene(root);
-
         // Them scene vao stage
         stage.setScene(scene);
         stage.show();
@@ -59,6 +58,7 @@ public class BombermanGame extends Application {
             @Override
             public void handle(long l) {
                 long nextDrawTime = l + SCREEN_TICKS_PER_FRAME;
+                character.event(scene);
                 update();
                 render();
                 try {
@@ -77,13 +77,15 @@ public class BombermanGame extends Application {
             }
         };
         timer.start();
-        createMap();
+        if (creatMap) {
+            createMap();
+        }
         //Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
         //entities.add(bomberman);
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:/BTL2/bomberman-starter/res/levels/Level1.txt");
+        InputStream level = new FileInputStream("D:/boom_game/res/levels/Level1.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -92,11 +94,16 @@ public class BombermanGame extends Application {
             for (int j = 0; j < s.length(); j++) {
                 Entity object;
                 Entity object2;
-                object2 = new Grass(j, i, Sprite.grass[0][1].getFxImage());
-                grass.add(object2);
+                if ((i + j) % 2 == 0) {
+                    object2 = new Grass(j, i, Sprite.grass[0][0].getFxImage());
+                    grass.add(object2);
+                } else {
+                    object2 = new Grass(j, i, Sprite.grass[0][2].getFxImage());
+                    grass.add(object2);
+                }
                 if (s.charAt(j) == '#') {
                     if (i == 0 || i == HEIGHT - 1 || j == 0 || j == WIDTH - 1) {
-                        object = new Wall(j, i, Sprite.wall[0][1].getFxImage());
+                        object = new Wall(j, i, Sprite.wall[0][0].getFxImage());
                         tile[i][j] = object;
                     } else if ((i + j) % 5 == 1) {
                         object = new Wall(j, i, Sprite.wall[0][7].getFxImage());
@@ -109,13 +116,13 @@ public class BombermanGame extends Application {
                 } else if (s.charAt(j) == 'p') {
                     object = new Bomber(j, i, Sprite.player_1[0][2].getFxImage());
                     tile[i][j] = object;
+                    character = (Bomber) object;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == '2') {
                     object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
                     tile[i][j] = object;
-                    saveMap[i][j] = 3000 + stillObjects.size() -1;
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
                         object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
@@ -144,11 +151,13 @@ public class BombermanGame extends Application {
             }
             i++;
         }
+        creatMap = false;
     }
 
     public void update() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
+                if (!(tile[i][j] instanceof Bomb))
                 tile[i][j].update();
             }
         }

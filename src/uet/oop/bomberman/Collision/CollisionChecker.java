@@ -37,7 +37,7 @@ public class CollisionChecker {
             case "down":
                 entityBottomRow = (entityBottom + entity.getSpeed()) / 40;
                 num1 = gp.tile[entityBottomRow][entityLeftCol];
-                num2 = gp.tile[entityBottomRow][entityLeftCol];
+                num2 = gp.tile[entityBottomRow][entityRightCol];
                 if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb) && num1.collision)
                         || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb)  && num2.collision)) {
                     entity.collisionOn = true;
