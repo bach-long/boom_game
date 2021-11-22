@@ -37,7 +37,7 @@ public class BombermanGame extends Application {
 
 
     public static void main(String[] args) {
-        Application.launch(BombermanGame.class);
+            Application.launch(BombermanGame.class);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:/boom_game/res/levels/Level1.txt");
+        InputStream level = new FileInputStream("C:/boom_game/res/levels/Level1.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -157,7 +157,6 @@ public class BombermanGame extends Application {
     public void update() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (!(tile[i][j] instanceof Bomb))
                 tile[i][j].update();
             }
         }
