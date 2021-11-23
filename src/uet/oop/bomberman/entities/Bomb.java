@@ -47,25 +47,45 @@ public class Bomb extends Entity {
     public void render(GraphicsContext gc) {
         if (timeToExplosion > 0) {
             gc.drawImage(img, x, y);
-        } else if (timeToExplosion >= -1200 && timeToExplosion <= 0){
-                gc.drawImage(Sprite.boom[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y);
+        } else if (timeToExplosion >= -120 && timeToExplosion <= 0){
+                gc.drawImage(Sprite.boom[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
                 for (int i = 1; i <= getRange(); i++) {
-                    if (BombermanGame.tile[y / 40][x / 40 + 1] instanceof Grass) {
-                        gc.drawImage(Sprite.rightExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y + i * Sprite.SCALED_SIZE);
+                    if (x / 40 + i < 31) {
+                        if (BombermanGame.tile[y / 40][x / 40 + i] instanceof Grass) {
+                            gc.drawImage(Sprite.rightExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y + i * Sprite.SCALED_SIZE);
+                        } else {
+                            break;
+                        }
                     }
+                }
 
-                    if (x / 40 - 1 > 0)
-                        if (BombermanGame.tile[y / 40][x / 40 - 1] instanceof Grass) {
-                            gc.drawImage(Sprite.leftExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y - i * Sprite.SCALED_SIZE);
+                for (int i = 1; i <= getRange(); i++) {
+                    if (x / 40 - i > 0) {
+                        if (BombermanGame.tile[y / 40][x / 40 - i] instanceof Grass) {
+                            gc.drawImage(Sprite.leftExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y - i * Sprite.SCALED_SIZE);
+                        } else {
+                            break;
                         }
+                    }
+                }
 
-                    if (y / 40 - 1 > 0)
-                        if (BombermanGame.tile[y / 40 - 1][x / 40] instanceof Grass) {
-                            gc.drawImage(Sprite.upExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x - i * Sprite.SCALED_SIZE, y);
+                for (int i = 1; i <= getRange(); i++) {
+                    if (y / 40 - i > 0) {
+                        if (BombermanGame.tile[y / 40 - i][x / 40] instanceof Grass) {
+                            gc.drawImage(Sprite.upExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x - i * Sprite.SCALED_SIZE, y);
+                        } else {
+                            break;
                         }
+                    }
+                }
 
-                    if (BombermanGame.tile[y / 40 + 1][x / 40] instanceof Grass) {
-                        gc.drawImage(Sprite.downExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x + i * Sprite.SCALED_SIZE, y);
+                for (int i = 1; i <= getRange(); i++) {
+                    if (y / 40 + i < 13) {
+                        if (BombermanGame.tile[y / 40 + i][x / 40] instanceof Grass) {
+                            gc.drawImage(Sprite.downExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x + i * Sprite.SCALED_SIZE, y);
+                        } else {
+                            break;
+                        }
                     }
                 }
 
