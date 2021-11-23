@@ -49,6 +49,7 @@ public class Bomb extends Entity {
             gc.drawImage(img, x, y);
         } else if (timeToExplosion >= -120 && timeToExplosion <= 0){
                 gc.drawImage(Sprite.boom[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
+
                 for (int i = 1; i <= getRange(); i++) {
                     if (x / 40 + i < 31) {
                         if (BombermanGame.tile[y / 40][x / 40 + i] instanceof Grass) {
