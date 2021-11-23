@@ -12,12 +12,12 @@ import java.awt.*;
 public class Bomb extends Entity {
     private int sizeFlame = 1;
 
-    private static final int STARTCOUNTDOWN = 50;
+    private static final int STARTCOUNTDOWN = 300;
     private int timeToExplosion = STARTCOUNTDOWN;
 
-    private int range = 1;
+    private int range = 2;
 
-    private int indexExplosion = 0;
+    private int indexExplosion = 2;
 
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
@@ -35,36 +35,42 @@ public class Bomb extends Entity {
             setImg(Sprite.boom[0][2].getFxImage());
             timeToExplosion --;
         } else if (timeToExplosion == 0) {
-            CollisionChecker.gp.cChecker.checkCollisionBomp(this);
+            CollisionChecker.gp.cChecker.checkCollisionBomb(this);
             timeToExplosion --;
         } else {
-            ;
+            timeToExplosion --;
         }
     }
+
 
     @Override
     public void render(GraphicsContext gc) {
         if (timeToExplosion > 0) {
             gc.drawImage(img, x, y);
-        } else if (timeToExplosion == 0) {
-            indexExplosion++;
-            if (indexExplosion == 3) {
-                indexExplosion = 0;
-            }
+        } else if (timeToExplosion >= -1200 && timeToExplosion <= 0){
+                gc.drawImage(Sprite.boom[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y);
+                for (int i = 1; i <= getRange(); i++) {
+                    if (BombermanGame.tile[y / 40][x / 40 + 1] instanceof Grass) {
+                        gc.drawImage(Sprite.rightExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y + i * Sprite.SCALED_SIZE);
+                    }
 
-            gc.drawImage(Sprite.fontExplosion[0][indexExplosion].getFxImage(), x, y);
-            if (BombermanGame.tile[y / 40][x / 40 + 1] instanceof Grass) {
-                gc.drawImage(Sprite.rightExplosion[0][indexExplosion].getFxImage(), x, y);
-            }
-            if (BombermanGame.tile[y / 40][x / 40 ] instanceof Grass) {
-                gc.drawImage(Sprite.leftExplosion[0][indexExplosion].getFxImage(), x, y);
-            }
-            if (BombermanGame.tile[y / 40 ][x / 40] instanceof Grass) {
-                gc.drawImage(Sprite.upExplosion[0][indexExplosion].getFxImage(), x, y);
-            }
-            if (BombermanGame.tile[y / 40 + 1][x / 40] instanceof Grass) {
-                gc.drawImage(Sprite.downExplosion[0][indexExplosion].getFxImage(), x, y);
-            }
+                    if (x / 40 - 1 > 0)
+                        if (BombermanGame.tile[y / 40][x / 40 - 1] instanceof Grass) {
+                            gc.drawImage(Sprite.leftExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x, y - i * Sprite.SCALED_SIZE);
+                        }
+
+                    if (y / 40 - 1 > 0)
+                        if (BombermanGame.tile[y / 40 - 1][x / 40] instanceof Grass) {
+                            gc.drawImage(Sprite.upExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x - i * Sprite.SCALED_SIZE, y);
+                        }
+
+                    if (BombermanGame.tile[y / 40 + 1][x / 40] instanceof Grass) {
+                        gc.drawImage(Sprite.downExplosion[0][Math.abs(timeToExplosion) / 500].getFxImage(), x + i * Sprite.SCALED_SIZE, y);
+                    }
+                }
+
+        } else {
+            ;
         }
     }
 

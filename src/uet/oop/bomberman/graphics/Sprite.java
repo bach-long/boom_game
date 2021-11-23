@@ -6,6 +6,7 @@ import javafx.scene.image.*;
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
  */
 public class Sprite {
+
     public static final int DEFAULT_SIZE = 40;
     public static final int SCALED_SIZE = DEFAULT_SIZE;
     private static final int TRANSPARENT_COLOR = 0xffff00ff;

@@ -66,51 +66,49 @@ public class CollisionChecker {
         }
     }
 
-    public void checkCollisionBomp(Bomb entity) {
+    public void checkCollisionBomb(Bomb entity) {
         int entityLeft = entity.getX() + entity.soliArea.x;
         int entityRight = entity.getX() + entity.soliArea.x + entity.soliArea.width;
         int entityTop = entity.getY() + entity.soliArea.y;
         int entityBottom = entity.getY() + entity.soliArea.y + entity.soliArea.height;
 
         Entity num1, num2;
-        num1 = gp.tile[(entityTop) / 40 + entity.getRange()][entityLeft / 40];
-        num2 = gp.tile[(entityTop) / 40 + entity.getRange()][entityRight / 40];
-        if (((num1 instanceof Bomber || num1 instanceof Balloon || num1 instanceof Oneal) && num1.collision)
-                || ((num2 instanceof Bomber || num2 instanceof Balloon || num2 instanceof Oneal)  && num2.collision)) {
-            Entity object = new Grass(entityLeft / 40, (entityTop) / 40 + entity.getRange(), Sprite.grass[0][1].getFxImage());
-            gp.tile[(entityTop) / 40 + entity.getRange()][entityLeft / 40] = object;
-        } else if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-            ;
-        }
 
-        num1 = gp.tile[(entityBottom) / 40 + entity.getRange()][entityLeft / 40];
-        num2 = gp.tile[(entityBottom) / 40 + entity.getRange()][entityRight / 40];
-        if (((num1 instanceof Bomber || num1 instanceof Balloon || num1 instanceof Oneal) && num1.collision)
-                || ((num2 instanceof Bomber || num2 instanceof Balloon || num2 instanceof Oneal)  && num2.collision)) {
-            Entity object = new Grass(entityLeft / 40, (entityBottom) / 40 + entity.getRange(), Sprite.grass[0][1].getFxImage());
-            gp.tile[(entityBottom) / 40 + entity.getRange()][entityLeft / 40] = object;
-        } else if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-            ;
-        }
+        for (int i = 1; i <= entity.getRange(); i++) {
 
-        num1 = gp.tile[entityTop / 40][(entityLeft) / 40 + entity.getRange()];
-        num2 = gp.tile[entityBottom / 40][(entityLeft) / 40 + entity.getRange()];
-        if (((num1 instanceof Bomber || num1 instanceof Balloon || num1 instanceof Oneal) && num1.collision)
-                || ((num2 instanceof Bomber || num2 instanceof Balloon || num2 instanceof Oneal)  && num2.collision)) {
-            Entity object = new Grass((entityLeft) / 40 + entity.getRange(), entityTop / 40, Sprite.grass[0][1].getFxImage());
-            gp.tile[entityTop / 40][(entityLeft) / 40 + entity.getRange()] = object;
-        } else if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-            ;
-        }
+            if ((entityTop) / 40 - i >= 0) {
+                num1 = gp.tile[(entityTop) / 40 - i][entityLeft / 40];
+                num2 = gp.tile[(entityTop) / 40 - i][entityRight / 40];
+                if ((num1 instanceof Bomber) && num1.collision || (num2 instanceof Bomber) && num2.collision) {
+                    Entity object = new Grass((entityTop) / 40 - i, entityLeft / 40, Sprite.grass[0][1].getFxImage());
+                    gp.tile[(entityTop) / 40 - i][entityLeft / 40] = object;;
+                }
+            }
 
-        num1 = gp.tile[entityTop / 40][(entityRight) / 40 + entity.getRange()];
-        num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + entity.getRange()];
-        if (((num1 instanceof Bomber || num1 instanceof Balloon || num1 instanceof Oneal) && num1.collision)
-                || ((num2 instanceof Bomber || num2 instanceof Balloon || num2 instanceof Oneal)  && num2.collision)) {
-            Entity object = new Grass((entityRight) / 40 + entity.getRange(), entityTop / 40, Sprite.grass[0][1].getFxImage());
-            gp.tile[entityTop / 40][(entityRight) / 40 + entity.getRange()] = object;
-        } else if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-            ;
+            if ((entityBottom) / 40 + i <= 12){
+                num1 = gp.tile[(entityBottom) / 40 + i][entityLeft / 40];
+                num2 = gp.tile[(entityBottom) / 40 + i][entityRight / 40];
+                if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
+                    ;
+                }
+            }
+
+            if ((entityLeft) / 40 - i >= 0) {
+                num1 = gp.tile[entityTop / 40][(entityLeft) / 40 - i];
+                num2 = gp.tile[entityBottom / 40][(entityLeft) / 40 - i];
+                if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
+                    ;
+                }
+            }
+
+            if ((entityRight) / 40 + i <= 30) {
+                num1 = gp.tile[entityTop / 40][(entityRight) / 40 + i];
+                num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + i];
+                if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
+                    ;
+                }
+            }
+
         }
     }
 }

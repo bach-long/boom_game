@@ -37,7 +37,7 @@ public class BombermanGame extends Application {
 
 
     public static void main(String[] args) {
-            Application.launch(BombermanGame.class);
+        Application.launch(BombermanGame.class);
     }
 
     @Override
@@ -117,11 +117,13 @@ public class BombermanGame extends Application {
                     object = new Bomber(j, i, Sprite.player_1[0][2].getFxImage());
                     tile[i][j] = object;
                     character = (Bomber) object;
+                    object.collision = true;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == '2') {
-                    object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    //object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    object = new Bomb(j, i, Sprite.crep1[0][2].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
