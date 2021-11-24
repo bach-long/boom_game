@@ -85,7 +85,7 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:/boom_game/res/levels/Level1.txt");
+        InputStream level = new FileInputStream("C:/boom_game/res/levels/Level1.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -117,11 +117,13 @@ public class BombermanGame extends Application {
                     object = new Bomber(j, i, Sprite.player_1[0][2].getFxImage());
                     tile[i][j] = object;
                     character = (Bomber) object;
+                    object.collision = true;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == '2') {
-                    object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    //object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    object = new Bomb(j, i, Sprite.boom[0][0].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
@@ -157,7 +159,6 @@ public class BombermanGame extends Application {
     public void update() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (!(tile[i][j] instanceof Bomb))
                 tile[i][j].update();
             }
         }
