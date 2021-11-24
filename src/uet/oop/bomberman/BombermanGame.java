@@ -2,15 +2,21 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
 import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.Sound.*;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -19,6 +25,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class BombermanGame extends Application {
+    public static Button muteSoundButton;
+    public static SoundControl backgroundMusicControl = new SoundControl("xmas");
+    public static SoundControl bombSound = new SoundControl("explosion");
 
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
@@ -42,12 +51,41 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) throws FileNotFoundException {
+        //tao am thanh
+        backgroundMusicControl.setInfinite(true);
+        backgroundMusicControl.setRunning(true);
+        backgroundMusicControl.playMedia();
+
+        //tao button mute
+        muteSoundButton = new Button();
+        muteSoundButton.setText("OFF - MUSIC");
+
+        muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (muteSoundButton.getText() == "OFF - MUSIC") {
+                    muteSoundButton.setText("ON - MUSIC");
+                    bombSound.setRunning(false);
+                    backgroundMusicControl.setRunning(false);
+                    backgroundMusicControl.pauseMedia();
+                } else {
+                    muteSoundButton.setText("OFF - MUSIC");
+                    bombSound.setRunning(true);
+                    backgroundMusicControl.setRunning(true);
+                    backgroundMusicControl.playMedia();
+                }
+            }
+        });
+
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
         // Tao root container
         Group root = new Group();
         root.getChildren().add(canvas);
+
+        //add button
+        root.getChildren().add(muteSoundButton);
 
         // Tao scene
         Scene scene = new Scene(root);

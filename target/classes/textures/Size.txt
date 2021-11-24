@@ -1,0 +1,16 @@
+PlayerDo 45*60                     Tọa độ x = 0; y = 0;
+PlayerXanh 50*57                   Tọa độ x = 0; y = 240;
+Bom :44*44                         Tọa độ x = 0: y = 900;
+botPlayer: 67*67: 		   Tọa độ: x= 200, y = 500;
+Nền(Grass) 40*40                   Tọa độ: x = 0; y = 1000;
+Item: 42*45                        Tọa độ x = 500; y = 500;
+Quai vật 2: 40*44                  Tọa độ x = 900, y = 800;
+Quái vật 3:45*58		   Tọa độ x = 900, y = 700;
+BOSS :173*135			   Tọa độ x = 900, y = 500;
+Ghost 45*67                        Tọa độ x = 900, y = 900;
+Flame 40*40                        Tọa độ: x = 0, y=500
+fontEx 40*40			   Toạ độ: x = 0, y = 820
+topEx 38*40 		           Tọa độ: x = 0, y = 500
+rightEx 39 * 40			   Toạ độ: x = 0, y = 541
+leftEx 39 * 40			   Toạ độ: x = 0, y = 582
+downEx 39*40			   Toạ độ: x = 0, y = 619
