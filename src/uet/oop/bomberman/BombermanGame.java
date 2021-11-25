@@ -4,7 +4,10 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+<<<<<<< HEAD
 import javafx.fxml.FXMLLoader;
+=======
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,11 +15,15 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
 import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.Sound.SoundControl;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.Sound.*;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,7 +37,11 @@ public class BombermanGame extends Application {
     public static Button muteSoundButton;
     public static SoundControl backgroundMusicControl = new SoundControl("xmas");
     public static SoundControl bombSound = new SoundControl("explosion");
+<<<<<<< HEAD
     public static boolean isStartGame = false;
+=======
+
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
     public static final int SCREEN_FPS = 60;
@@ -56,7 +67,11 @@ public class BombermanGame extends Application {
     }
 
     @Override
+<<<<<<< HEAD
     public void start(Stage stage) throws IOException {
+=======
+    public void start(Stage stage) throws FileNotFoundException {
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
         //tao am thanh
         backgroundMusicControl.setInfinite(true);
         backgroundMusicControl.setRunning(true);
@@ -82,6 +97,10 @@ public class BombermanGame extends Application {
                 }
             }
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
 
@@ -90,6 +109,13 @@ public class BombermanGame extends Application {
         Group root = new Group();
         //root.getChildren().add(muteSoundButton);
         root.getChildren().add(canvas);
+<<<<<<< HEAD
+=======
+
+        //add button
+        root.getChildren().add(muteSoundButton);
+
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
         // Tao scene
         Scene scene = new Scene(root);
         // Them scene vao stage
@@ -126,7 +152,7 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:/boom_game/res/levels/Level1.txt");
+        InputStream level = new FileInputStream("C:/boom_game/res/levels/Level1.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -158,14 +184,21 @@ public class BombermanGame extends Application {
                     object = new Bomber(j, i, Sprite.player_1[0][2].getFxImage());
                     tile[i][j] = object;
                     character = (Bomber) object;
+                    object.collision = true;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
                     bot[i][j] = object;
                     tile[i][j] = grass.get(0);
                 } else if (s.charAt(j) == '2') {
+<<<<<<< HEAD
                     object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
                     bot[i][j] = object;
                     tile[i][j] = grass.get(0);
+=======
+                    //object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                    object = new Bomb(j, i, Sprite.boom[0][0].getFxImage());
+                    tile[i][j] = object;
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
                         object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
@@ -203,6 +236,7 @@ public class BombermanGame extends Application {
     public void update() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
+<<<<<<< HEAD
                 if (bom[i][j] != null) {
                     bom[i][j].update();
                 }
@@ -211,6 +245,9 @@ public class BombermanGame extends Application {
                 }
                 if (!(tile[i][j] instanceof Bomb))
                     tile[i][j].update();
+=======
+                tile[i][j].update();
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
             }
         }
     }

@@ -31,7 +31,11 @@ public class SoundControl {
     public SoundControl(String soundName) {
         sounds = new HashMap<>();
 
+<<<<<<< HEAD
         directory = new File("D:\\boom_game\\res\\sound");
+=======
+        directory = new File("C:\\Users\\nhant\\Desktop\\boom_game\\res\\sound");
+>>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
 
         files = directory.listFiles();
 
