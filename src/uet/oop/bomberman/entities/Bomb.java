@@ -54,7 +54,6 @@ public class Bomb extends Entity {
         if (timeToExplosion > 0) {
             gc.drawImage(img, x, y);
         } else if (timeToExplosion >= -120 && timeToExplosion <= 0){
-<<<<<<< HEAD
             gc.drawImage(Sprite.fontExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
 
             for (int i = 1; i <= getRange(); i++) {
@@ -104,7 +103,6 @@ public class Bomb extends Entity {
                     break;
                 }
             }
-=======
                 gc.drawImage(Sprite.fontExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
 
                 for (int i = 1; i <= getRange(); i++) {
@@ -154,7 +152,6 @@ public class Bomb extends Entity {
                         break;
                     }
                 }
->>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
 
         } else {
             ;

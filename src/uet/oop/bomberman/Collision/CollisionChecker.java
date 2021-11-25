@@ -133,16 +133,13 @@ public class CollisionChecker {
         for (int i = 1; i <= entity.getRange(); i++) {
             if ((entityRight) / 40 + i <= 30) {
                 num1 = gp.tile[entityTop / 40][(entityRight) / 40 + i];
-                /**num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + i];
-<<<<<<< HEAD
+                num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + i];
                  if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
                  ;
-                 }.*/
-=======
+                 }
                 if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
                     ;
-                }.*/
->>>>>>> f161253512cc2e76d906bbdbc748a8837d504935
+                }
                 if (num1 instanceof Wall) {
                     break;
                 }
