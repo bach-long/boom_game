@@ -2,28 +2,40 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import uet.oop.bomberman.Collision.CollisionChecker;
+import uet.oop.bomberman.Sound.SoundControl;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class BombermanGame extends Application {
-
+    public static Button muteSoundButton;
+    public static SoundControl backgroundMusicControl = new SoundControl("xmas");
+    public static SoundControl bombSound = new SoundControl("explosion");
+    public static boolean isStartGame = false;
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
     public static final int SCREEN_FPS = 60;
     public static final int SCREEN_TICKS_PER_FRAME = 1000000000 / SCREEN_FPS;
+
     boolean startGame = true;
 
     private GraphicsContext gc;
@@ -32,6 +44,9 @@ public class BombermanGame extends Application {
     public static List<Entity> grass = new ArrayList<>();
     public int[][] saveMap = new int[HEIGHT][WIDTH];
     public static Entity[][] tile = new Entity[HEIGHT][WIDTH];
+    public static Entity[][] item = new Entity[HEIGHT][WIDTH];
+    public static Entity[][] bom = new Entity[HEIGHT][WIDTH];
+    public static Entity[][] bot = new Entity[HEIGHT][WIDTH];
     Bomber character = null;
     boolean creatMap = true;
 
@@ -41,17 +56,45 @@ public class BombermanGame extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
+    public void start(Stage stage) throws IOException {
+        //tao am thanh
+        backgroundMusicControl.setInfinite(true);
+        backgroundMusicControl.setRunning(true);
+        backgroundMusicControl.playMedia();
+
+        //tao button mute
+        muteSoundButton = new Button();
+        muteSoundButton.setText("OFF - MUSIC");
+
+        muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (muteSoundButton.getText() == "OFF - MUSIC") {
+                    muteSoundButton.setText("ON - MUSIC");
+                    bombSound.setRunning(false);
+                    backgroundMusicControl.setRunning(false);
+                    backgroundMusicControl.pauseMedia();
+                } else {
+                    muteSoundButton.setText("OFF - MUSIC");
+                    bombSound.setRunning(true);
+                    backgroundMusicControl.setRunning(true);
+                    backgroundMusicControl.playMedia();
+                }
+            }
+        });
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+
         gc = canvas.getGraphicsContext2D();
         // Tao root container
         Group root = new Group();
+        //root.getChildren().add(muteSoundButton);
         root.getChildren().add(canvas);
-
         // Tao scene
         Scene scene = new Scene(root);
         // Them scene vao stage
+
+
         stage.setScene(scene);
         stage.show();
         AnimationTimer timer = new AnimationTimer() {
@@ -80,8 +123,6 @@ public class BombermanGame extends Application {
         if (creatMap) {
             createMap();
         }
-        //Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
-        //entities.add(bomberman);
     }
 
     public void createMap() throws FileNotFoundException {
@@ -119,10 +160,12 @@ public class BombermanGame extends Application {
                     character = (Bomber) object;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
-                    tile[i][j] = object;
+                    bot[i][j] = object;
+                    tile[i][j] = grass.get(0);
                 } else if (s.charAt(j) == '2') {
                     object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
-                    tile[i][j] = object;
+                    bot[i][j] = object;
+                    tile[i][j] = grass.get(0);
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
                         object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
@@ -142,7 +185,10 @@ public class BombermanGame extends Application {
                     object = new BombItem(j, i, Sprite.items[1][2].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == 's') {
-                    object = new BombItem(j, i, Sprite.items[0][2].getFxImage());
+                    object = new SpeedItem(j, i, Sprite.items[0][2].getFxImage());
+                    tile[i][j] = object;
+                } else if (s.charAt(j) == 'k') {
+                    object = new KickItem(j, i, Sprite.items[2][2].getFxImage());
                     tile[i][j] = object;
                 } else {
                     object = new Grass(j, i, Sprite.grass[0][1].getFxImage());
@@ -157,19 +203,31 @@ public class BombermanGame extends Application {
     public void update() {
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
+                if (bom[i][j] != null) {
+                    bom[i][j].update();
+                }
+                if (bot[i][j] != null) {
+                    bot[i][j].update();
+                }
                 if (!(tile[i][j] instanceof Bomb))
-                tile[i][j].update();
+                    tile[i][j].update();
             }
         }
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        grass.forEach(g->g.render(gc));
+        grass.forEach(g -> g.render(gc));
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
                 if (!(tile[i][j] instanceof Grass)) {
                     tile[i][j].render(gc);
+                }
+                if (bom[i][j] != null) {
+                    bom[i][j].render(gc);
+                }
+                if (bot[i][j] != null) {
+                    bot[i][j].render(gc);
                 }
             }
         }

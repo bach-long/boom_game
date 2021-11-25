@@ -4,12 +4,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.nio.channels.spi.SelectorProvider;
-
-public class BombItem extends Entity {
+public class KickItem extends Entity {
     int count = 0;
     int sprite = 0;
-    public BombItem(int xUnit, int yUnit, Image img) {
+    public KickItem(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
@@ -32,7 +30,7 @@ public class BombItem extends Entity {
 
     @Override
     public void render(GraphicsContext gc) {
-        setImg(Sprite.items[3][sprite].getFxImage());
+        setImg(Sprite.items[2][sprite].getFxImage());
         super.render(gc);
     }
 }

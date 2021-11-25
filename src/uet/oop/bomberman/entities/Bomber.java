@@ -14,18 +14,16 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
 
-public class Bomber<collisionOn> extends Entity {
-    int frame = 0;
+public class Bomber extends Entity {
+    public int flame = 0;
+    double frame = 0;
+    public int maxBoom = 1;
     private int vel_x = 0;
     private int vel_y = 0;
+    protected boolean putBom = false;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
-    }
-
-    @Override
-    public void set_direction(String s) {
-        direction = s;
     }
 
     @Override
@@ -35,13 +33,10 @@ public class Bomber<collisionOn> extends Entity {
         if (!collisionOn) {
             this.x += vel_x;
             this.y += vel_y;
-            updatePosMap();
-        } else {
-            String dir;
-            if (sizeSpace() > 1) {
-                dir = spaceGrass.pop();
-                System.out.println(dir);
-                spaceGrass.clear();
+            if (!collecItem()) {
+                updatePosMap();
+                System.out.println((x + soliArea.x + soliArea.width/2) + " " + (y + soliArea.y + soliArea.height/2));
+                System.out.println(posY + "  " + posX);
             }
         }
     }
@@ -54,63 +49,150 @@ public class Bomber<collisionOn> extends Entity {
         this.vel_y = vel_y;
     }
 
+    public void die() {
+        checkDie = true;
+        setImg(Sprite.diePlayer[4][0].getFxImage());
+    }
     public void event(Scene scene) {
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
+        if (!checkDie) {
+            scene.setOnKeyPressed(keyEvent -> {
                 switch (keyEvent.getCode()) {
                     case UP:
                         direction = "up";
-                        // player_1[0][frame]
-                        setImg(Sprite.player_1[0][0].getFxImage());
+                        frame += 0.35;
                         setVel_y(-getSpeed());
                         setVel_x(0);
                         break;
                     case DOWN:
                         direction = "down";
-                        setImg(Sprite.player_1[3][0].getFxImage());
+                        frame += 0.35;
                         setVel_y(getSpeed());
                         setVel_x(0);
                         break;
                     case LEFT:
                         direction = "left";
-                        setImg(Sprite.player_1[2][0].getFxImage());
+                        frame += 0.35;
                         setVel_x(-getSpeed());
                         setVel_y(0);
                         break;
                     case RIGHT:
                         direction = "right";
-                        setImg(Sprite.player_1[1][0].getFxImage());
+                        frame += 0.35;
                         setVel_x(getSpeed());
                         setVel_y(0);
                         break;
+                    case SPACE:
+                        putBom = true;
+                        if (maxBoom > 0) {
+                            BombermanGame.bom[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40]
+                                    = new Bomb((x + soliArea.x + soliArea.width/2) / 40, (y + soliArea.y + soliArea.height/2)
+                                    / 40,Sprite.downExplosion[0][1].getFxImage());
+                            //maxBoom--;
+                        }
+                        break;
                     default:
                         break;
                 }
-            }
-        });
-        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
+            });
+            scene.setOnKeyReleased(keyEvent -> {
                 switch (keyEvent.getCode()) {
                     case UP:
-                        setVel_y(0);
+                        if (direction.equals("up")) {
+                            frame += 1;
+                            setVel_y(0);
+                        }
                         break;
                     case DOWN:
-                        setVel_y(0);
+                        if (direction.equals("down")) {
+                            frame += 1;
+                            setVel_y(0);
+                        }
                         break;
                     case RIGHT:
-                        setVel_x(0);
+                        if (direction.equals("right")) {
+                            frame += 1;
+                            setVel_x(0);
+                        }
                         break;
                     case LEFT:
-                        setVel_x(0);
+                        if (direction.equals("left")) {
+                            frame += 1;
+                            setVel_x(0);
+                        }
                         break;
                     default:
                         break;
                 }
-                //update();
+                keyEvent.consume();
+            });
+            update();
+        } else {
+            setVel_x(0);
+            setVel_y(0);
+            frame = 0;
+            frame += 0.35;
+            die();
+        }
+    }
+    @Override
+    public void render(GraphicsContext gc) {
+        if (checkDie) {
+            setImg(Sprite.diePlayer[4][0].getFxImage());
+        } else {
+            switch (direction) {
+                case "up":
+                    setImg(Sprite.player_1[0][(int) frame % 6].getFxImage());
+                    break;
+                case "down":
+                    setImg(Sprite.player_1[3][(int) frame % 6].getFxImage());
+                    break;
+                case "right":
+                    setImg(Sprite.player_1[1][(int) frame % 6].getFxImage());
+                    break;
+                case "left":
+                    setImg(Sprite.player_1[2][(int) frame % 6].getFxImage());
+                    break;
             }
-        });
-        update();
+        }
+        super.render(gc);
+    }
+
+    public boolean collecItem() {
+        if ((posX != (x + soliArea.x) / 40 || posY != (y + soliArea.y) / 40)
+                && (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof KickItem
+                || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem
+                || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem
+                || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem)) {
+            BombermanGame.tile[posY][posX] = BombermanGame.grass.get(0);
+            BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] = this;
+            posX = (x + soliArea.x) / 40;
+            posY = (y + soliArea.y) / 40;
+            addStack();
+            if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem) {
+                flame++;
+            } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof KickItem) {
+
+            } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem) {
+                int k = getSpeed() + 5;
+                setSpeed(k);
+            } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem) {
+                maxBoom++;
+            } else {
+
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void updatePosMap() {
+        if ((posX != (x + soliArea.x + soliArea.width/2) / 40 || posY != (y + soliArea.y + soliArea.height/2) / 40)
+                && BombermanGame.tile[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40] instanceof Grass) {
+            BombermanGame.tile[posY][posX] = BombermanGame.grass.get(0);
+            BombermanGame.tile[(y + soliArea.y + soliArea.height/2)/40][(x + soliArea.x + soliArea.width/2) / 40] = this;
+            posX = (x + soliArea.x + soliArea.width/2) / 40;
+            posY = (y + soliArea.y + soliArea.height/2) / 40;
+            addStack();
+        }
     }
 }

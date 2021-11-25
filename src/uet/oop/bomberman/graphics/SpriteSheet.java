@@ -17,7 +17,7 @@ public class SpriteSheet {
 	public int[] _pixels;
 	public BufferedImage image;
 
-	public static SpriteSheet all = new SpriteSheet("/textures/classic.png",1920 , 1080);
+	public static SpriteSheet all = new SpriteSheet("/textures/classic2.png",1920 , 1080);
 
 	public SpriteSheet(String path, int l, int h) {
 		_path = path;
