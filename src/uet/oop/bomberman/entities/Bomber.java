@@ -1,23 +1,17 @@
 package uet.oop.bomberman.entities;
 
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.awt.*;
-
 public class Bomber extends Entity {
-    public int flame = 0;
+    public int flame = 2;
     double frame = 0;
     public int maxBoom = 1;
+    public double DELTAFRAME = 0.4;
     private int vel_x = 0;
     private int vel_y = 0;
     protected boolean putBom = false;
@@ -35,8 +29,6 @@ public class Bomber extends Entity {
             this.y += vel_y;
             if (!collecItem()) {
                 updatePosMap();
-                System.out.println((x + soliArea.x + soliArea.width/2) + " " + (y + soliArea.y + soliArea.height/2));
-                System.out.println(posY + "  " + posX);
             }
         }
     }
@@ -59,25 +51,25 @@ public class Bomber extends Entity {
                 switch (keyEvent.getCode()) {
                     case UP:
                         direction = "up";
-                        frame += 0.35;
+                        frame += DELTAFRAME;
                         setVel_y(-getSpeed());
                         setVel_x(0);
                         break;
                     case DOWN:
                         direction = "down";
-                        frame += 0.35;
+                        frame += DELTAFRAME;
                         setVel_y(getSpeed());
                         setVel_x(0);
                         break;
                     case LEFT:
                         direction = "left";
-                        frame += 0.35;
+                        frame += DELTAFRAME;
                         setVel_x(-getSpeed());
                         setVel_y(0);
                         break;
                     case RIGHT:
                         direction = "right";
-                        frame += 0.35;
+                        frame += DELTAFRAME;
                         setVel_x(getSpeed());
                         setVel_y(0);
                         break;
@@ -125,7 +117,10 @@ public class Bomber extends Entity {
                 }
                 keyEvent.consume();
             });
-            update();
+            if ((int)(countDelay + DELTA) != (int) countDelay) {
+                update();
+            }
+            countDelay += DELTA;
         } else {
             setVel_x(0);
             setVel_y(0);
@@ -163,23 +158,24 @@ public class Bomber extends Entity {
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem)) {
-            BombermanGame.tile[posY][posX] = BombermanGame.grass.get(0);
-            BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] = this;
-            posX = (x + soliArea.x) / 40;
-            posY = (y + soliArea.y) / 40;
-            addStack();
             if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem) {
                 flame++;
             } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof KickItem) {
 
             } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem) {
-                int k = getSpeed() + 5;
-                setSpeed(k);
+                int k = getSpeed() + 1;
+                DELTAFRAME = 0.5;
+                DELTA = 1;
+                //setSpeed(k);
             } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem) {
                 maxBoom++;
             } else {
 
             }
+            BombermanGame.tile[posY][posX] = BombermanGame.grass.get(0);
+            BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] = this;
+            posX = (x + soliArea.x) / 40;
+            posY = (y + soliArea.y) / 40;
             return true;
         }
         return false;
@@ -192,7 +188,6 @@ public class Bomber extends Entity {
             BombermanGame.tile[(y + soliArea.y + soliArea.height/2)/40][(x + soliArea.x + soliArea.width/2) / 40] = this;
             posX = (x + soliArea.x + soliArea.width/2) / 40;
             posY = (y + soliArea.y + soliArea.height/2) / 40;
-            addStack();
         }
     }
 }

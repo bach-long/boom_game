@@ -31,7 +31,7 @@ public abstract class Entity {
     protected int posY;
 
     // toc do
-    private int speed = 1;
+    protected int speed = 1;
 
     //ô cỏ trống có thể di chuyển
     protected Stack<String> spaceGrass = new Stack<>();
@@ -46,6 +46,9 @@ public abstract class Entity {
 
     //check die
     boolean checkDie = false;
+
+    protected double countDelay = 0;
+    protected double DELTA = 0.7;
     Random random = new Random();
 
     public void setImg(Image img) {
@@ -93,32 +96,11 @@ public abstract class Entity {
     public void setSpeed(int speed) {
         this.speed = speed;
     }
-
     /**
-     * Cap nhat vi tri nhan vat.
+     * check cỏ của automove thử nghiệm.
      */
-
-    /**kiểm tra các ô xung quanh tìm các vị trí trống như cỏ.*/
-    public void checkGrass(int x, int y) {
-        if (BombermanGame.tile[y][x] instanceof Grass || BombermanGame.tile[y][x] instanceof Portal) {
-            if (x > posX) {
-                spaceGrass.add(posX + "," + y + ",right");
-            }
-            if (x < posX) {
-                spaceGrass.add(posX + "," + y + ",left");
-            }
-            if (y < posY) {
-                spaceGrass.add(x + "," + posY + ",up");
-            }
-            if (y > posY) {
-                spaceGrass.add(x + "," + posY + ",down");
-            }
-        }
-    }
-
-    /**check cỏ của automove thử nghiệm.*/
     public void checkGrass2(int x, int y) {
-        if (BombermanGame.tile[y][x] instanceof Grass || BombermanGame.tile[y][x] instanceof Portal) {
+        if (BombermanGame.tile[y][x] instanceof Grass && !(BombermanGame.tile[y][x] instanceof Bomber)) {
             if (y < posY) {
                 dirNew.add("up");
             }
@@ -133,123 +115,56 @@ public abstract class Entity {
             }
         }
     }
-    /**ham auto move thử nghiệm.*/
+
+    /**
+     * ham auto move thử nghiệm.
+     */
     public void directionReturn() {
-        if ((posX != (x + soliArea.x) / 40 || posY != (y + soliArea.y) / 40)) {
+        if (x == posX*Sprite.SCALED_SIZE && y == posY * Sprite.SCALED_SIZE - (img.getHeight() - Sprite.SCALED_SIZE)) {
             dirNew = new ArrayList<>();
-        switch (direction) {
-            case "up":
-                checkGrass2(posX, posY - 1);
-                checkGrass2(posX - 1, posY);
-                checkGrass2(posX + 1, posY);
-                if (dirNew.size() > 1) {
-                    int k = (int) (Math.random()*30) % dirNew.size();
-                    direction = dirNew.get(k);
-                    System.out.println(direction);
-                    dirNew.clear();
-                }
-                break;
-            case "down":
-                checkGrass2(posX, posY + 1);
-                checkGrass2(posX - 1, posY);
-                checkGrass2(posX + 1, posY);
-                if (dirNew.size() > 1) {
-                    int k = (int) (Math.random()*30) % dirNew.size();
-                    direction = dirNew.get(k);
-                    System.out.println(direction);
-                    dirNew.clear();
-                }
-                break;
-            case "right":
-                checkGrass2(posX + 1, posY);
-                checkGrass2(posX, posY - 1);
-                checkGrass2(posX, posY + 1);
-                if (dirNew.size() > 1) {
-                    int k = (int) ( Math.random()*30) % dirNew.size();
-                    direction = dirNew.get(k);
-                    dirNew.clear();
-                }
-                break;
-            case "left":
-                checkGrass2(posX - 1, posY);
-                checkGrass2(posX, posY - 1);
-                checkGrass2(posX, posY + 1);
-                if (dirNew.size() > 1) {
-                    int k = (int) (Math.random()*30) % dirNew.size();
-                    direction = dirNew.get(k);
-                    dirNew.clear();
-                }
-                break;
-        }
-        }
-    }
-
-    /**thêm vị trí các ô cỏ có thể đi của quái.*/
-    public void addStack() {
-        switch (direction) {
-            case "up":
-                if (System.nanoTime() % 2 == 0) {
-                    checkGrass(posX - 1, posY);
-                    checkGrass(posX + 1, posY);
-                } else {
-                    checkGrass(posX + 1, posY);
-                    checkGrass(posX - 1, posY);
-                }
-                break;
-            case "down":
-                if (System.nanoTime() % 2 == 0) {
-                    checkGrass(posX + 1, posY);
-                    checkGrass(posX - 1, posY);
-                } else {
-                    checkGrass(posX - 1, posY);
-                    checkGrass(posX + 1, posY);
-                }
-                break;
-            case "left":
-                if (System.nanoTime() % 2 == 0) {
-                    checkGrass(posX, posY + 1);
-                    checkGrass(posX, posY - 1);
-                } else {
-                    checkGrass(posX, posY - 1);
-                    checkGrass(posX, posY + 1);
-                }
-                break;
-            case "right":
-                if (System.nanoTime() % 2 == 0) {
-                    checkGrass(posX, posY - 1);
-                    checkGrass(posX, posY + 1);
-                } else {
-                    checkGrass(posX, posY + 1);
-                    checkGrass(posX, posY - 1);
-                }
-                break;
-        }
-    }
-
-    /**vị trí cần đến.*/
-    public void posReturn() {
-        String dir;
-        if (sizeSpace() > 1) {
-            int k = random.nextInt(sizeSpace() - 1);
-            while (k > 0) {
-                spaceGrass.pop();
-                k--;
+            switch (direction) {
+                case "up":
+                    checkGrass2(posX, posY - 1);
+                    checkGrass2(posX - 1, posY);
+                    checkGrass2(posX + 1, posY);
+                    if (dirNew.size() > 1) {
+                        System.out.println(dirNew.toString());
+                        int k = (int) (Math.random() * 30) % dirNew.size();
+                        direction = dirNew.get(k);
+                        dirNew.clear();
+                    }
+                    break;
+                case "down":
+                    checkGrass2(posX, posY + 1);
+                    checkGrass2(posX - 1, posY);
+                    checkGrass2(posX + 1, posY);
+                    if (dirNew.size() > 1) {
+                        int k = (int) (Math.random() * 30) % dirNew.size();
+                        direction = dirNew.get(k);
+                        dirNew.clear();
+                    }
+                    break;
+                case "right":
+                    checkGrass2(posX + 1, posY);
+                    checkGrass2(posX, posY - 1);
+                    checkGrass2(posX, posY + 1);
+                    if (dirNew.size() > 1) {
+                        int k = (int) (Math.random() * 30) % dirNew.size();
+                        direction = dirNew.get(k);
+                        dirNew.clear();
+                    }
+                    break;
+                case "left":
+                    checkGrass2(posX - 1, posY);
+                    checkGrass2(posX, posY - 1);
+                    checkGrass2(posX, posY + 1);
+                    if (dirNew.size() > 1) {
+                        int k = (int) (Math.random() * 30) % dirNew.size();
+                        direction = dirNew.get(k);
+                        dirNew.clear();
+                    }
+                    break;
             }
-            dir = spaceGrass.pop();
-            String[] cut = dir.split(",");
-            spaceGrass.clear();
-            frX = Integer.parseInt(cut[0]) * Sprite.SCALED_SIZE;
-            frY = (int) (Integer.parseInt(cut[1]) * Sprite.SCALED_SIZE - (img.getHeight() - Sprite.SCALED_SIZE));
-            frDirection = cut[2];
         }
-    }
-
-    /** kiểm tra tọa độ xem vị trí cần đến chưa.*/
-    public boolean checkReturn() {
-        if (frX == x && frY == y) {
-            direction = frDirection;
-            return true;
-        }
-        return false;
     }
 }

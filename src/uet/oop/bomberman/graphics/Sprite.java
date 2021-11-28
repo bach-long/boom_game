@@ -44,7 +44,7 @@ public class Sprite {
         set_moveset(botplayer, SpriteSheet.all, 3, 6, 67, 67, 200, 500);
         set_moveset(crep1, SpriteSheet.all,4 , 1, 40, 44, 900, 800);
         set_moveset(crep2, SpriteSheet.all,4 , 1, 45, 58, 900, 700);
-        set_moveset(boss, SpriteSheet.all,4 , 1, 173, 135, 900, 500);
+        set_moveset(boss, SpriteSheet.all,4 , 1, 135, 173, 900, 500);
         set_moveset(ghost, SpriteSheet.all,3 , 1, 45, 67, 900, 900);
         set_moveset(flame, SpriteSheet.all,3 , 9, 40, 40, 0, 500);
         set_moveset(items, SpriteSheet.all,3 , 4, 42, 45, 500, 500);

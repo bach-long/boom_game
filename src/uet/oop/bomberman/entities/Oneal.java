@@ -9,8 +9,6 @@ import uet.oop.bomberman.graphics.Sprite;
 public class Oneal extends Entity {
     int count = 0;
     int sprite = 0;
-    private int speed = 1;
-    private int spriteCounter = 0;
     public Oneal(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
@@ -30,7 +28,6 @@ public class Oneal extends Entity {
             collisionOn = false;
             CollisionChecker.gp.cChecker.checkTile(this);
             if (collisionOn) {
-                posReturn();
                 switch (direction) {
                     case "up":
                         direction = "down";
@@ -49,27 +46,23 @@ public class Oneal extends Entity {
                 switch (direction) {
                     case "up":
                         this.y -= speed;
-                        setImg(Sprite.crep1[0][0].getFxImage());
+                        directionReturn();
                         updatePosMap();
-                        checkReturn();
                         break;
                     case "down":
                         this.y += speed;
-                        setImg(Sprite.crep1[0][3].getFxImage());
+                        directionReturn();
                         updatePosMap();
-                        checkReturn();
                         break;
                     case "left":
                         this.x -= speed;
-                        setImg(Sprite.crep1[0][2].getFxImage());
+                        directionReturn();
                         updatePosMap();
-                        checkReturn();
                         break;
                     case "right":
                         this.x += speed;
-                        setImg(Sprite.crep1[0][1].getFxImage());
+                        directionReturn();
                         updatePosMap();
-                        checkReturn();
                         break;
                 }
             }
@@ -81,6 +74,22 @@ public class Oneal extends Entity {
         if (checkDie) {
             setImg(Sprite.ghost[0][sprite].getFxImage());
         }
+        else {
+            switch (direction) {
+                case "up":
+                    setImg(Sprite.crep1[0][0].getFxImage());
+                    break;
+                case "down":
+                    setImg(Sprite.crep1[0][3].getFxImage());
+                    break;
+                case "left":
+                    setImg(Sprite.crep1[0][2].getFxImage());
+                    break;
+                case "right":
+                    setImg(Sprite.crep1[0][1].getFxImage());
+                    break;
+            }
+        }
         super.render(gc);
     }
 
@@ -91,7 +100,6 @@ public class Oneal extends Entity {
             BombermanGame.bot[(y + soliArea.y + soliArea.height/2)/40][(x + soliArea.x + soliArea.width/2) / 40] = this;
             posX = (x + soliArea.x + soliArea.width/2) / 40;
             posY = (y + soliArea.y + soliArea.height/2) / 40;
-            addStack();
         }
     }
 }

@@ -36,7 +36,7 @@ public class BombermanGame extends Application {
     public static boolean isStartGame = false;
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
-    public static final int SCREEN_FPS = 60;
+    public static final int SCREEN_FPS = 144;
     public static final int SCREEN_TICKS_PER_FRAME = 1000000000 / SCREEN_FPS;
 
     boolean startGame = true;
@@ -129,13 +129,19 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Level1.txt");
+        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Boss_fight.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
         while (sc.hasNextLine()) {
             String s = sc.nextLine();
+            if (i >= HEIGHT) {
+                continue;
+            }
             for (int j = 0; j < s.length(); j++) {
+                if (j >= WIDTH) {
+                    continue;
+                }
                 Entity object;
                 Entity object2;
                 if ((i + j) % 2 == 0) {
@@ -170,7 +176,10 @@ public class BombermanGame extends Application {
                     object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
                     bot[i][j] = object;
                     tile[i][j] = grass.get(0);
-                    //object = new Oneal(j, i, Sprite.crep1[0][2].getFxImage());
+                } else if (s.charAt(j) == 'B') {
+                    object = new Boss(j, i, Sprite.boss[0][2].getFxImage());
+                    bot[i][j] = object;
+                    tile[i][j] = grass.get(0);
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
                         object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
@@ -214,7 +223,7 @@ public class BombermanGame extends Application {
                 if (bot[i][j] != null) {
                     bot[i][j].update();
                 }
-                if (!(tile[i][j] instanceof Bomb))
+                if (!(tile[i][j] instanceof Bomber))
                     tile[i][j].update();
             }
         }

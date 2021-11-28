@@ -8,11 +8,11 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
 
-public class Balloon extends Entity {
+public class Boss extends Entity {
     private int speed = 1;
     int count = 0;
     int sprite = 0;
-    public Balloon(int xUnit, int yUnit, Image img) {
+    public Boss(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
     @Override
@@ -83,16 +83,16 @@ public class Balloon extends Entity {
         } else {
             switch (direction) {
                 case "up":
-                    setImg(Sprite.crep2[0][0].getFxImage());
+                    setImg(Sprite.boss[0][0].getFxImage());
                     break;
                 case "down":
-                    setImg(Sprite.crep2[0][3].getFxImage());
+                    setImg(Sprite.boss[0][3].getFxImage());
                     break;
                 case "left":
-                    setImg(Sprite.crep2[0][2].getFxImage());
+                    setImg(Sprite.boss[0][2].getFxImage());
                     break;
                 case "right":
-                    setImg(Sprite.crep2[0][1].getFxImage());
+                    setImg(Sprite.boss[0][1].getFxImage());
                     break;
             }
         }
