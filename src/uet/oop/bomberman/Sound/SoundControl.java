@@ -31,7 +31,8 @@ public class SoundControl {
     public SoundControl(String soundName) {
         sounds = new HashMap<>();
 
-        directory = new File("D:\\boom_game\\res\\sound");
+        directory = new File("C:\\tta\\boom_game\\res\\sound");
+
         files = directory.listFiles();
 
         if (files != null) {
@@ -48,12 +49,12 @@ public class SoundControl {
     }
 
     public void playMedia() {
-            mediaPlayer.play();
+        mediaPlayer.play();
     }
 
     public void pauseMedia() {
-            mediaPlayer.pause();
-            mediaPlayer.seek(Duration.seconds(0));
+        mediaPlayer.pause();
+        mediaPlayer.seek(Duration.seconds(0));
     }
 
     public void resetMedia() {

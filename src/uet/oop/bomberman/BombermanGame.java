@@ -69,7 +69,7 @@ public class BombermanGame extends Application {
         muteSoundButton = new Button();
         muteSoundButton.setText("OFF - MUSIC");
 
-        muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
+        /**muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (muteSoundButton.getText() == "OFF - MUSIC") {
@@ -84,7 +84,8 @@ public class BombermanGame extends Application {
                     backgroundMusicControl.playMedia();
                 }
             }
-        });
+        });.*/
+
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
@@ -92,7 +93,7 @@ public class BombermanGame extends Application {
         Group root = new Group();
         //root.getChildren().add(muteSoundButton);
         root.getChildren().add(canvas);
-        //add button
+
         // Tao scene
         Scene scene = new Scene(root);
         // Them scene vao stage
@@ -129,7 +130,7 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Boss_fight.txt");
+        InputStream level = new FileInputStream("C:\\tta\\boom_game\\res\\levels\\Boss_fight.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -229,7 +230,7 @@ public class BombermanGame extends Application {
         }
     }
 
-    public void render() {
+     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         grass.forEach(g -> g.render(gc));
         for (int i = 0; i < HEIGHT; i++) {

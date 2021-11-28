@@ -20,22 +20,27 @@ public class Bomb extends Entity {
 
     private int indexExplosion = 2;
 
+    private int sprite = 0;
+
+    private boolean tonTai = true;
+
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
     }
 
     @Override
     public void update() {
-        if (timeToExplosion > 250) {
-            setImg(Sprite.boom[0][0].getFxImage());
-            timeToExplosion --;
-        } else if (timeToExplosion > 100) {
-            setImg(Sprite.boom[0][1].getFxImage());
-            timeToExplosion --;
-        } else if (timeToExplosion > 0) {
-            setImg(Sprite.boom[0][2].getFxImage());
+        if (timeToExplosion > 0) {
+            sprite++;
+
+            /** lay 29 de ti chia 10 ra so < 3.*/
+            if (sprite >= 29) {
+                sprite = 0;
+            }
+
             timeToExplosion --;
         } else if (timeToExplosion == 0) {
+            tonTai = false;
             CollisionChecker.gp.cChecker.checkCollisionBomb(this);
 
             if (BombermanGame.bombSound.isRunning()) {
@@ -52,15 +57,22 @@ public class Bomb extends Entity {
     @Override
     public void render(GraphicsContext gc) {
         if (timeToExplosion > 0) {
+            setImg(Sprite.boom[0][sprite / 10].getFxImage());
             gc.drawImage(img, x, y);
-        } else if (timeToExplosion >= -120 && timeToExplosion <= 0){
-            gc.drawImage(Sprite.fontExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
+        } else if (timeToExplosion >= -29 && timeToExplosion <= 0){
+            gc.drawImage(Sprite.explosionBomb[8][Math.abs(timeToExplosion) / 10].getFxImage(), x, y);
 
             for (int i = 1; i <= getRange(); i++) {
                 if (posX + i < 30) {
-                    if (BombermanGame.tile[posY][posX + i] instanceof Grass) {
-                        gc.drawImage(Sprite.rightExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
-                    } else {
+                    if (! (BombermanGame.tile[posY][posX + i] instanceof Wall)) {
+                        if (i != getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[1][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
+                        } else if (i == getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[5][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
+                        }
+                    } else{
                         break;
                     }
                 } else {
@@ -70,8 +82,15 @@ public class Bomb extends Entity {
 
             for (int i = 1; i <= getRange(); i++) {
                 if (posX - i >= 1) {
-                    if (BombermanGame.tile[posY][posX - i] instanceof Grass) {
-                        gc.drawImage(Sprite.leftExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
+                    if (! (BombermanGame.tile[posY][posX - i] instanceof Wall)) {
+                        if (i != getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[2][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
+                        } else if (i == getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[6][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
+                        }
+
                     } else {
                         break;
                     }
@@ -82,8 +101,15 @@ public class Bomb extends Entity {
 
             for (int i = 1; i <= getRange(); i++) {
                 if (posY - i >= 1) {
-                    if (BombermanGame.tile[posY - i][posX] instanceof Grass) {
-                        gc.drawImage(Sprite.upExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
+                    if (! (BombermanGame.tile[posY - i][posX] instanceof Wall)) {
+                        if (i != getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[0][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
+                        } else if (i == getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[4][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
+                        }
+
                     } else {
                         break;
                     }
@@ -94,8 +120,15 @@ public class Bomb extends Entity {
 
             for (int i = 1; i <= getRange(); i++) {
                 if (posY + i < 12) {
-                    if (BombermanGame.tile[posY + i][posX] instanceof Grass) {
-                        gc.drawImage(Sprite.downExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
+                    if (! (BombermanGame.tile[posY + i][posX] instanceof Wall)) {
+                        if (i != getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[3][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
+                        } else if (i == getRange()) {
+                            gc.drawImage(Sprite.explosionBomb[7][Math.abs(timeToExplosion) / 10].getFxImage(),
+                                    posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
+                        }
+
                     } else {
                         break;
                     }
@@ -103,58 +136,6 @@ public class Bomb extends Entity {
                     break;
                 }
             }
-                gc.drawImage(Sprite.fontExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), x, y);
-
-                for (int i = 1; i <= getRange(); i++) {
-                    if (posX + i < 30) {
-                        if (BombermanGame.tile[posY][posX + i] instanceof Grass) {
-                            gc.drawImage(Sprite.rightExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
-                        } else {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                for (int i = 1; i <= getRange(); i++) {
-                    if (posX - i >= 1) {
-                        if (BombermanGame.tile[posY][posX - i] instanceof Grass) {
-                            gc.drawImage(Sprite.leftExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
-                        } else {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                for (int i = 1; i <= getRange(); i++) {
-                    if (posY - i >= 1) {
-                        if (BombermanGame.tile[posY - i][posX] instanceof Grass) {
-                            gc.drawImage(Sprite.upExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
-                        } else {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                for (int i = 1; i <= getRange(); i++) {
-                    if (posY + i < 12) {
-                        if (BombermanGame.tile[posY + i][posX] instanceof Grass) {
-                            gc.drawImage(Sprite.downExplosion[0][Math.abs(timeToExplosion) / 50].getFxImage(), posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
-                        } else {
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-        } else {
-            ;
         }
     }
 

@@ -29,11 +29,7 @@ public class Sprite {
     public static Sprite[][] items = new Sprite[4][3];
     public static Sprite[][] grass = new Sprite[1][7];
     public static Sprite[][] wall = new Sprite[1][8];
-    public static Sprite[][] fontExplosion = new Sprite[1][3];
-    public static Sprite[][] upExplosion = new Sprite[1][3];
-    public static Sprite[][] downExplosion = new Sprite[1][3];
-    public static Sprite[][] leftExplosion = new Sprite[1][3];
-    public static Sprite[][] rightExplosion = new Sprite[1][3];
+    public static Sprite[][] explosionBomb = new Sprite[9][3];
     public static Sprite[][] diePlayer = new Sprite[6][3];
 
     //khoi tao toan bo cac sprite chua hinh anh cua cac doi tuong, mang sap xep nhu tren anh
@@ -50,11 +46,7 @@ public class Sprite {
         set_moveset(items, SpriteSheet.all,3 , 4, 42, 45, 500, 500);
         set_moveset(grass, SpriteSheet.all,7 , 1, 40, 40, 0, 1000);
         set_moveset(wall, SpriteSheet.all, 8, 1, 40,67, 400, 998);
-        set_moveset(fontExplosion, SpriteSheet.all, 3, 1, 44, 44, 0, 900);
-        set_moveset(upExplosion, SpriteSheet.all, 3, 1, 44, 44, 0, 900);
-        set_moveset(downExplosion, SpriteSheet.all, 3, 1, 44, 44, 0, 900);
-        set_moveset(leftExplosion, SpriteSheet.all, 3, 1, 44, 44, 0, 900);
-        set_moveset(rightExplosion, SpriteSheet.all, 3, 1, 44, 44, 0, 900);
+        set_moveset(explosionBomb, SpriteSheet.all, 3, 9, 40, 40, 0, 500);
         set_moveset(diePlayer, SpriteSheet.all, 3, 6, 67, 67, 200, 500);
     }
 

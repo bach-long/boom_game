@@ -75,6 +75,11 @@ public class CollisionChecker {
 
         Entity num1, num2;
 
+        num1 = gp.tile[entity.getY() / 40][entity.getX() / 40];
+        if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
+            num1.checkDie = true;
+        }
+
         for (int i = 1; i <= entity.getRange(); i++) {
             if ((entityTop) / 40 - i >= 0) {
                 num1 = gp.tile[(entityTop) / 40 - i][entityLeft / 40];
@@ -86,8 +91,7 @@ public class CollisionChecker {
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    Entity object = new Grass((entityTop) / 40 - i, entityLeft / 40, Sprite.grass[0][1].getFxImage());
-                    gp.tile[(entityTop) / 40 - i][entityLeft / 40] = object;
+                   num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     ;
                 }
@@ -104,8 +108,7 @@ public class CollisionChecker {
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    Entity object = new Grass((entityTop) / 40 + i, entityLeft / 40, Sprite.grass[0][1].getFxImage());
-                    gp.tile[(entityTop) / 40 + i][entityLeft / 40] = object;
+                    num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     ;
                 }
@@ -122,8 +125,7 @@ public class CollisionChecker {
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    Entity object = new Grass((entityTop) / 40, entityLeft / 40 - i, Sprite.grass[0][1].getFxImage());
-                    gp.tile[(entityTop) / 40][entityLeft / 40 - i] = object;
+                    num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     ;
                 }
@@ -133,19 +135,13 @@ public class CollisionChecker {
         for (int i = 1; i <= entity.getRange(); i++) {
             if ((entityRight) / 40 + i <= 30) {
                 num1 = gp.tile[entityTop / 40][(entityRight) / 40 + i];
-                num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + i];
-                 if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-                 ;
-                 }
-                if ((num1 instanceof Brick) && num1.collision || (num2 instanceof Brick) && num2.collision) {
-                    ;
-                }
+                /**num2 = gp.tile[entityBottom / 40][(entityRight) / 40 + i];.*/
+
                 if (num1 instanceof Wall) {
                     break;
                 }
                 else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    Entity object = new Grass((entityTop) / 40, entityLeft / 40 + i, Sprite.grass[0][1].getFxImage());
-                    gp.tile[(entityTop) / 40][entityLeft / 40 + i] = object;
+                    num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     ;
                 }

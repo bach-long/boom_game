@@ -78,7 +78,7 @@ public class Bomber extends Entity {
                         if (maxBoom > 0) {
                             BombermanGame.bom[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40]
                                     = new Bomb((x + soliArea.x + soliArea.width/2) / 40, (y + soliArea.y + soliArea.height/2)
-                                    / 40,Sprite.downExplosion[0][1].getFxImage());
+                                    / 40,Sprite.explosionBomb[3][1].getFxImage());
                             //maxBoom--;
                         }
                         break;

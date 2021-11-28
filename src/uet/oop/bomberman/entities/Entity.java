@@ -45,7 +45,7 @@ public abstract class Entity {
     public List<String> dirNew;
 
     //check die
-    boolean checkDie = false;
+    public boolean checkDie = false;
 
     protected double countDelay = 0;
     protected double DELTA = 0.7;
