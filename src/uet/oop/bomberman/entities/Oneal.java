@@ -22,7 +22,7 @@ public class Oneal extends Entity {
                 sprite++;
             }
             if (sprite >= 3) {
-                sprite = 0;
+                BombermanGame.bot[posY][posX] = null;
             }
         } else {
             collisionOn = false;

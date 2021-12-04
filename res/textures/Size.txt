@@ -14,3 +14,17 @@ topEx 38*40 		           Tọa độ: x = 0, y = 500
 rightEx 39 * 40			   Toạ độ: x = 0, y = 541
 leftEx 39 * 40			   Toạ độ: x = 0, y = 582
 downEx 39*40			   Toạ độ: x = 0, y = 619
+
+
+
+RuaUp x3  125*150                  Tọa độ: x= 900,y =150;
+RuaDow    131*120                  Tọa độ: x= 900,y = 0
+RuaLeft   197*120		   Tọa độ: x =300 y = 150 
+RuaRight  199*120                  Tọa độ: x = 300, y = 0
+Rage_1    140* 116                 Tọa độ: x = 1350,y = 0;
+Rage_2    129* 117                 Tọa độ: x = 1500, y =0
+Hitdow    165*141                  Tọa độ: x = 1650, y =0;
+hitUp     169*149                  Tọa độ: x = 1350, y =0;
+HitRight  217*150                  Tọa độ x = 750, y =300
+HitLeft   216*150                  Tọa độ x = 450, y = 300
+Die       135*129                  Tọa độ x = 300, y 300

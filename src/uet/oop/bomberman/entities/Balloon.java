@@ -6,8 +6,6 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.graphics.Sprite;
 
-import java.awt.*;
-
 public class Balloon extends Entity {
     private int speed = 1;
     int count = 0;
@@ -24,7 +22,7 @@ public class Balloon extends Entity {
                 sprite++;
             }
             if (sprite >= 3) {
-                sprite = 0;
+                BombermanGame.bot[posY][posX] = null;
             }
         } else {
             collisionOn = false;
@@ -71,6 +69,9 @@ public class Balloon extends Entity {
                             break;
                     }
                 }
+                if (Math.sqrt(Math.pow(posX - BombermanGame.character.posX, 2) + Math.pow(posY - BombermanGame.character.posY, 2)) <= 4) {
+                    DELTA = 1;
+                } else DELTA = 0.6;
                 countDelay += DELTA;
             }
         }

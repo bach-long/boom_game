@@ -31,6 +31,8 @@ public class Sprite {
     public static Sprite[][] wall = new Sprite[1][8];
     public static Sprite[][] explosionBomb = new Sprite[9][3];
     public static Sprite[][] diePlayer = new Sprite[6][3];
+    public static Sprite[][] bomSao   = new Sprite[1][3];
+    public static Sprite[][] no = new Sprite[1][2];
 
     //khoi tao toan bo cac sprite chua hinh anh cua cac doi tuong, mang sap xep nhu tren anh
     static {
@@ -48,6 +50,8 @@ public class Sprite {
         set_moveset(wall, SpriteSheet.all, 8, 1, 40,67, 400, 998);
         set_moveset(explosionBomb, SpriteSheet.all, 3, 9, 40, 40, 0, 500);
         set_moveset(diePlayer, SpriteSheet.all, 3, 6, 67, 67, 200, 500);
+        set_moveset(bomSao, SpriteSheet.all,3, 1, 40, 40, 450, 750);
+        set_moveset(no, SpriteSheet.all, 2, 1, 50, 50, 600, 750);
     }
 
     public static void set_moveset(Sprite[][] x, SpriteSheet a, int length, int height, int rw, int rh, int posX, int posY) {

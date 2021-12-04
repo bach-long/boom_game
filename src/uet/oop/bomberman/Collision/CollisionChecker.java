@@ -16,7 +16,6 @@ public class CollisionChecker {
     public CollisionChecker(BombermanGame bombermanGame) {
         this.gp = bombermanGame;
     }
-
     /** kiểm tra va chạm.*/
     public void checkTile(Entity entity) {
         int entityLeft = entity.getX() + entity.soliArea.x;
@@ -34,8 +33,15 @@ public class CollisionChecker {
                 entityTopRow = (entityTop - entity.getSpeed()) / 40;
                 num1 = gp.tile[entityTopRow][entityLeftCol];
                 num2 = gp.tile[entityTopRow][entityRightCol];
-                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb) && num1.collision)
-                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb)  && num2.collision)) {
+                if (gp.bom[entityTopRow][entityLeftCol] instanceof Bomb || gp.bom[entityTopRow][entityLeftCol] instanceof BomSao) {
+                    num1 = gp.bom[entityTopRow][entityLeftCol];
+                }
+                if (gp.bom[entityTopRow][entityRightCol] instanceof Bomb || gp.bom[entityTopRow][entityRightCol] instanceof BomSao) {
+                    num2 = gp.bom[entityTopRow][entityRightCol];
+                }
+                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb || num1 instanceof BomSao) && num1.collision)
+                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb || num2 instanceof BomSao)  && num2.collision)) {
+                    if (!(num1 == entity || num2 == entity))
                     entity.collisionOn = true;
                 }
                 break;
@@ -43,8 +49,15 @@ public class CollisionChecker {
                 entityBottomRow = (entityBottom + entity.getSpeed()) / 40;
                 num1 = gp.tile[entityBottomRow][entityLeftCol];
                 num2 = gp.tile[entityBottomRow][entityRightCol];
-                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb) && num1.collision)
-                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb)  && num2.collision)) {
+                if (gp.bom[entityBottomRow][entityLeftCol] instanceof Bomb || gp.bom[entityBottomRow][entityLeftCol] instanceof BomSao) {
+                    num1 = gp.bom[entityBottomRow][entityLeftCol];
+                }
+                if (gp.bom[entityBottomRow][entityRightCol] instanceof Bomb || gp.bom[entityBottomRow][entityRightCol] instanceof BomSao) {
+                    num2 = gp.bom[entityBottomRow][entityRightCol];
+                }
+                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb || num1 instanceof BomSao) && num1.collision)
+                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb || num2 instanceof BomSao)  && num2.collision)) {
+                    if (!(num1 == entity || num2 == entity))
                     entity.collisionOn = true;
                 }
                 break;
@@ -52,8 +65,15 @@ public class CollisionChecker {
                 entityLeftCol = (entityLeft - entity.getSpeed()) / 40;
                 num1 = gp.tile[entityTopRow][entityLeftCol];
                 num2 = gp.tile[entityBottomRow][entityLeftCol];
-                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb) && num1.collision)
-                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb)  && num2.collision)) {
+                if (gp.bom[entityTopRow][entityLeftCol] instanceof Bomb || gp.bom[entityTopRow][entityLeftCol] instanceof BomSao) {
+                    num1 = gp.bom[entityTopRow][entityLeftCol];
+                }
+                if (gp.bom[entityBottomRow][entityLeftCol] instanceof Bomb || gp.bom[entityBottomRow][entityLeftCol] instanceof BomSao) {
+                    num2 = gp.bom[entityBottomRow][entityLeftCol];
+                }
+                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb || num1 instanceof BomSao) && num1.collision)
+                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb || num2 instanceof BomSao)  && num2.collision)) {
+                    if (!(num1 == entity || num2 == entity))
                     entity.collisionOn = true;
                 }
                 break;
@@ -61,8 +81,15 @@ public class CollisionChecker {
                 entityRightCol = (entityRight + entity.getSpeed()) / 40;
                 num1 = gp.tile[entityTopRow][entityRightCol];
                 num2 = gp.tile[entityBottomRow][entityRightCol];
-                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb) && num1.collision)
-                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb)  && num2.collision)) {
+                if (gp.bom[entityTopRow][entityRightCol] instanceof Bomb || gp.bom[entityTopRow][entityRightCol] instanceof BomSao) {
+                    num1 = gp.bom[entityTopRow][entityRightCol];
+                }
+                if (gp.bom[entityBottomRow][entityRightCol] instanceof Bomb || gp.bom[entityBottomRow][entityRightCol] instanceof BomSao) {
+                    num2 = gp.bom[entityBottomRow][entityRightCol];
+                }
+                if (((num1 instanceof Wall || num1 instanceof Brick || num1 instanceof Bomb || num1 instanceof BomSao) && num1.collision)
+                        || ((num2 instanceof Wall || num2 instanceof Brick || num2 instanceof Bomb || num2 instanceof  BomSao)  && num2.collision)) {
+                    if (!(num1 == entity || num2 == entity))
                     entity.collisionOn = true;
                 }
                 break;
@@ -83,17 +110,26 @@ public class CollisionChecker {
         num1 = gp.tile[entity.getY() / 40][entity.getX() / 40];
 
         if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-            num1.checkDie = true;
+            if (num1 instanceof Bomber) {
+                BombermanGame.dead.playMedia();
+                if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
+                else num1.checkDie = true;
+            } else
+                num1.checkDie = true;
         }
 
         for (int i = 1; i <= entity.getRange(); i++) {
             if ((entityTop) / 40 - i >= 0) {
                 num1 = gp.tile[(entityTop) / 40 - i][entityLeft / 40];
-
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                   num1.checkDie = true;
+                    if (num1 instanceof Bomber) {
+                        BombermanGame.dead.playMedia();
+                        if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
+                        else num1.checkDie = true;
+                    } else
+                        num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     if (valueItem == 1) {
                         Entity object = new BombItem(entityLeft / 40, (entityTop) / 40 - i, Sprite.items[3][1].getFxImage());
@@ -119,6 +155,11 @@ public class CollisionChecker {
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
+                    if (num1 instanceof Bomber) {
+                        BombermanGame.dead.playMedia();
+                        if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
+                        else num1.checkDie = true;
+                    } else
                     num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     if (valueItem == 1) {
@@ -141,11 +182,15 @@ public class CollisionChecker {
         for (int i = 1; i <= entity.getRange(); i++) {
             if ((entityLeft) / 40 - i >= 0) {
                 num1 = gp.tile[entityTop / 40][(entityLeft) / 40 - i];
-
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    num1.checkDie = true;
+                    if (num1 instanceof Bomber) {
+                        BombermanGame.dead.playMedia();
+                        if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
+                        else num1.checkDie = true;
+                    } else
+                        num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     if (valueItem == 1) {
                         Entity object = new BombItem((entityLeft) / 40 - i, entityTop / 40, Sprite.items[3][1].getFxImage());
@@ -171,7 +216,12 @@ public class CollisionChecker {
                 if (num1 instanceof Wall) {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
-                    num1.checkDie = true;
+                    if (num1 instanceof Bomber) {
+                        BombermanGame.dead.playMedia();
+                        if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
+                        else num1.checkDie = true;
+                    } else
+                        num1.checkDie = true;
                 } else if (num1 instanceof Brick) {
                     if (valueItem == 1) {
                         Entity object = new BombItem((entityRight) / 40 + i, entityTop / 40, Sprite.items[3][1].getFxImage());

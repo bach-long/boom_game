@@ -8,13 +8,22 @@ import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Bomber extends Entity {
-    public int flame = 2;
+    public int flame = 1;
     double frame = 0;
     public int maxBoom = 1;
-    public double DELTAFRAME = 0.4;
+    public int DELTASPRITE = 7;
+    public int me = 10;
+
     private int vel_x = 0;
     private int vel_y = 0;
-    protected boolean putBom = false;
+
+    //protected boolean putBom = false;
+    public boolean checkSprite = false;
+
+    public int count = 0;
+    public int sprite = 0;
+
+    private boolean kickBom = false;
 
     public Bomber(int x, int y, Image img) {
         super(x, y, img);
@@ -30,6 +39,8 @@ public class Bomber extends Entity {
             if (!collecItem()) {
                 updatePosMap();
             }
+        } else {
+            moveBom();
         }
     }
 
@@ -45,41 +56,54 @@ public class Bomber extends Entity {
         checkDie = true;
         setImg(Sprite.diePlayer[4][0].getFxImage());
     }
+
     public void event(Scene scene) {
+        if (checkSprite) count++;
+        else {
+            count = 0;
+        }
+        if (count > DELTASPRITE) {
+            sprite++;
+            count = 0;
+        }
+        if (sprite >= 6) {
+            sprite = 0;
+        }
         if (!checkDie) {
             scene.setOnKeyPressed(keyEvent -> {
                 switch (keyEvent.getCode()) {
                     case UP:
                         direction = "up";
-                        frame += DELTAFRAME;
                         setVel_y(-getSpeed());
+                        checkSprite = true;
                         setVel_x(0);
                         break;
                     case DOWN:
                         direction = "down";
-                        frame += DELTAFRAME;
                         setVel_y(getSpeed());
+                        checkSprite = true;
                         setVel_x(0);
                         break;
                     case LEFT:
                         direction = "left";
-                        frame += DELTAFRAME;
+                        checkSprite = true;
                         setVel_x(-getSpeed());
                         setVel_y(0);
                         break;
                     case RIGHT:
                         direction = "right";
-                        frame += DELTAFRAME;
+                        checkSprite = true;
                         setVel_x(getSpeed());
                         setVel_y(0);
                         break;
                     case SPACE:
-                        putBom = true;
                         if (maxBoom > 0) {
-                            BombermanGame.bom[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40]
-                                    = new Bomb((x + soliArea.x + soliArea.width/2) / 40, (y + soliArea.y + soliArea.height/2)
-                                    / 40,Sprite.explosionBomb[3][1].getFxImage());
-                            //maxBoom--;
+                            Bomb bomb = new Bomb((x + soliArea.x + soliArea.width / 2) / 40, (y + soliArea.y + soliArea.height / 2)
+                                    / 40, Sprite.explosionBomb[3][1].getFxImage());
+                            BombermanGame.bom[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40]
+                                    = bomb;
+                            bomb.setRange(flame);
+                            maxBoom--;
                         }
                         break;
                     default:
@@ -92,24 +116,32 @@ public class Bomber extends Entity {
                         if (direction.equals("up")) {
                             frame += 1;
                             setVel_y(0);
+                            checkSprite = false;
+                            sprite++;
                         }
                         break;
                     case DOWN:
                         if (direction.equals("down")) {
                             frame += 1;
                             setVel_y(0);
+                            checkSprite = false;
+                            sprite++;
                         }
                         break;
                     case RIGHT:
                         if (direction.equals("right")) {
                             frame += 1;
                             setVel_x(0);
+                            checkSprite = false;
+                            sprite++;
                         }
                         break;
                     case LEFT:
                         if (direction.equals("left")) {
                             frame += 1;
                             setVel_x(0);
+                            checkSprite = false;
+                            sprite++;
                         }
                         break;
                     default:
@@ -117,7 +149,7 @@ public class Bomber extends Entity {
                 }
                 keyEvent.consume();
             });
-            if ((int)(countDelay + DELTA) != (int) countDelay) {
+            if ((int) (countDelay + DELTA) != (int) countDelay) {
                 update();
             }
             countDelay += DELTA;
@@ -129,6 +161,7 @@ public class Bomber extends Entity {
             die();
         }
     }
+
     @Override
     public void render(GraphicsContext gc) {
         if (checkDie) {
@@ -136,16 +169,16 @@ public class Bomber extends Entity {
         } else {
             switch (direction) {
                 case "up":
-                    setImg(Sprite.player_1[0][(int) frame % 6].getFxImage());
+                    setImg(Sprite.player_1[0][sprite].getFxImage());
                     break;
                 case "down":
-                    setImg(Sprite.player_1[3][(int) frame % 6].getFxImage());
+                    setImg(Sprite.player_1[3][sprite].getFxImage());
                     break;
                 case "right":
-                    setImg(Sprite.player_1[1][(int) frame % 6].getFxImage());
+                    setImg(Sprite.player_1[1][sprite].getFxImage());
                     break;
                 case "left":
-                    setImg(Sprite.player_1[2][(int) frame % 6].getFxImage());
+                    setImg(Sprite.player_1[2][sprite].getFxImage());
                     break;
             }
         }
@@ -158,15 +191,22 @@ public class Bomber extends Entity {
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem)) {
-            if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem) {
-                flame++;
-            } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof KickItem) {
+            /**am thanh.*/
+            if (BombermanGame.confirm.isRunning()) {
+                BombermanGame.confirm.playMedia();
+            }
 
+            if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem) {
+                if (flame < 4) {
+                    flame++;
+                }
+            } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof KickItem) {
+                kickBom = true;
             } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem) {
-                int k = getSpeed() + 1;
-                DELTAFRAME = 0.5;
                 DELTA = 1;
-                //setSpeed(k);
+                if (DELTASPRITE == 7) {
+                    DELTASPRITE--;
+                }
             } else if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof BombItem) {
                 maxBoom++;
             } else {
@@ -182,12 +222,42 @@ public class Bomber extends Entity {
     }
 
     public void updatePosMap() {
-        if ((posX != (x + soliArea.x + soliArea.width/2) / 40 || posY != (y + soliArea.y + soliArea.height/2) / 40)
-                && BombermanGame.tile[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40] instanceof Grass) {
-            BombermanGame.tile[posY][posX] = BombermanGame.grass.get(0);
-            BombermanGame.tile[(y + soliArea.y + soliArea.height/2)/40][(x + soliArea.x + soliArea.width/2) / 40] = this;
-            posX = (x + soliArea.x + soliArea.width/2) / 40;
-            posY = (y + soliArea.y + soliArea.height/2) / 40;
+        if ((posX != (x + soliArea.x + soliArea.width / 2) / 40 || posY != (y + soliArea.y + soliArea.height / 2) / 40)
+                && (BombermanGame.tile[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40] instanceof Grass
+                || BombermanGame.tile[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40] == null)) {
+            BombermanGame.tile[posY][posX] = null;
+            BombermanGame.tile[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40] = this;
+            posX = (x + soliArea.x + soliArea.width / 2) / 40;
+            posY = (y + soliArea.y + soliArea.height / 2) / 40;
+        }
+    }
+
+    public void moveBom() {
+        switch (direction) {
+            case "up":
+                if ((BombermanGame.bom[posY - 1][posX] instanceof Bomb || BombermanGame.bom[posY - 1][posX] instanceof BomSao) && kickBom) {
+                    BombermanGame.bom[posY - 1][posX].direction = "up";
+                    BombermanGame.bom[posY - 1][posX].move = true;
+                }
+                break;
+            case "down":
+                if ((BombermanGame.bom[posY + 1][posX] instanceof Bomb || BombermanGame.bom[posY + 1][posX] instanceof BomSao) && kickBom) {
+                    BombermanGame.bom[posY + 1][posX].direction = "down";
+                    BombermanGame.bom[posY + 1][posX].move = true;
+                }
+                break;
+            case "left":
+                if ((BombermanGame.bom[posY][posX - 1] instanceof Bomb || BombermanGame.bom[posY][posX - 1] instanceof BomSao)  && kickBom) {
+                    BombermanGame.bom[posY][posX - 1].direction = "left";
+                    BombermanGame.bom[posY][posX - 1].move = true;
+                }
+                break;
+            case "right":
+                if ((BombermanGame.bom[posY][posX + 1] instanceof Bomb ||BombermanGame.bom[posY][posX + 1] instanceof BomSao)&& kickBom) {
+                    BombermanGame.bom[posY][posX + 1].direction = "right";
+                    BombermanGame.bom[posY][posX + 1].move = true;
+                }
+                break;
         }
     }
 }

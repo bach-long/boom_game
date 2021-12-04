@@ -5,19 +5,13 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.graphics.Sprite;
 import javafx.scene.canvas.GraphicsContext;
-import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.Sound.SoundControl;
-
-import java.awt.*;
 
 public class Bomb extends Entity {
-    private int sizeFlame = 1;
-
-    private static final int STARTCOUNTDOWN = 200;
+    private static final int STARTCOUNTDOWN = 400;
     private int timeToExplosion = STARTCOUNTDOWN;
-
-    private int range = 2;
-
+    int count = 0;
+    public int range = 1;
+    boolean returnBom = true;
     private int indexExplosion = 2;
 
     private int sprite = 0;
@@ -30,23 +24,33 @@ public class Bomb extends Entity {
 
     @Override
     public void update() {
+        if (!collision && (BombermanGame.character.posX != posX || BombermanGame.character.posY != posY)
+         && BombermanGame.bot[posY][posX] == null) {
+            collision = true;
+        }
         if (timeToExplosion > 0) {
-            sprite++;
-
+            if (move) {
+                kickBomb();
+            }
+            count ++;
+            if (count > 2) {
+                count = 0;
+                sprite ++;
+            }
+            //sprite++;
             /** lay 29 de ti chia 10 ra so < 3.*/
             if (sprite >= 29) {
                 sprite = 0;
             }
-
             timeToExplosion --;
         } else if (timeToExplosion == 0) {
+            collision = false;
             tonTai = false;
             CollisionChecker.gp.cChecker.checkCollisionBomb(this);
-
             if (BombermanGame.bombSound.isRunning()) {
+
                 BombermanGame.bombSound.playMedia();
             }
-
             timeToExplosion --;
         } else {
             timeToExplosion --;
@@ -59,9 +63,23 @@ public class Bomb extends Entity {
         if (timeToExplosion > 0) {
             setImg(Sprite.boom[0][sprite / 10].getFxImage());
             gc.drawImage(img, x, y);
-        } else if (timeToExplosion >= -29 && timeToExplosion <= 0){
+        } else if (timeToExplosion >= -29){
+            for(int i = posY - 1; i <= posY + 1; i++) {
+                for(int j = posX - 1; j <= posX + 1; j++) {
+                    if (j > 0 && j < 30 && i > 0 && i < 12 && !(i == posY - 1
+                            && (j == posX - 1 || j == posX + 1)) && !(i == posY + 1 && (j == posX - 1 || j == posX + 1))) {
+                        if(BombermanGame.bot[i][j] != null) {
+                            BombermanGame.bot[i][j].checkDie = true;
+                        }
+                        if(!(BombermanGame.tile[i][j] instanceof Wall) && !(BombermanGame.tile[i][j] instanceof Bomber)
+                                && !(BombermanGame.tile[i][j] instanceof BombItem) && !(BombermanGame.tile[i][j] instanceof KickItem)
+                                && !(BombermanGame.tile[i][j] instanceof SpeedItem) && !(BombermanGame.tile[i][j] instanceof FlameItem)) {
+                            BombermanGame.tile[i][j] = new Grass(j, i, Sprite.grass[0][1].getFxImage());
+                        }
+                    }
+                }
+            }
             gc.drawImage(Sprite.explosionBomb[8][Math.abs(timeToExplosion) / 10].getFxImage(), x, y);
-
             for (int i = 1; i <= getRange(); i++) {
                 if (posX + i < 30) {
                     if (! (BombermanGame.tile[posY][posX + i] instanceof Wall)) {
@@ -90,7 +108,6 @@ public class Bomb extends Entity {
                             gc.drawImage(Sprite.explosionBomb[6][Math.abs(timeToExplosion) / 10].getFxImage(),
                                     posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
                         }
-
                     } else {
                         break;
                     }
@@ -109,7 +126,6 @@ public class Bomb extends Entity {
                             gc.drawImage(Sprite.explosionBomb[4][Math.abs(timeToExplosion) / 10].getFxImage(),
                                     posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
                         }
-
                     } else {
                         break;
                     }
@@ -128,7 +144,6 @@ public class Bomb extends Entity {
                             gc.drawImage(Sprite.explosionBomb[7][Math.abs(timeToExplosion) / 10].getFxImage(),
                                     posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
                         }
-
                     } else {
                         break;
                     }
@@ -136,6 +151,12 @@ public class Bomb extends Entity {
                     break;
                 }
             }
+        } else {
+            if(returnBom) {
+                BombermanGame.character.maxBoom++;
+                returnBom = false;
+            }
+            BombermanGame.bom[posY][posX] = null;
         }
     }
 
@@ -153,5 +174,45 @@ public class Bomb extends Entity {
 
     public void setRange(int range) {
         this.range = range;
+    }
+
+    public void updatePosMap() {
+        if ((posX != (x + soliArea.x + soliArea.width/2) / 40 || posY != (y + soliArea.y + soliArea.height/2) / 40)
+                && BombermanGame.bom[(y + soliArea.y + soliArea.height/2) / 40][(x + soliArea.x + soliArea.width/2) / 40] == null) {
+            BombermanGame.bom[posY][posX] = null;
+            BombermanGame.bom[(y + soliArea.y + soliArea.height/2)/40][(x + soliArea.x + soliArea.width/2) / 40] = this;
+            posX = (x + soliArea.x + soliArea.width/2) / 40;
+            posY = (y + soliArea.y + soliArea.height/2) / 40;
+        }
+    }
+    public boolean getState() {
+        return tonTai;
+    }
+
+    public void kickBomb() {
+        collisionOn = false;
+        CollisionChecker.gp.cChecker.checkTile(this);
+        if (!collisionOn) {
+            switch (direction) {
+                case "up":
+                    y -= speed;
+                    updatePosMap();
+                    break;
+                case "down":
+                    y += speed;
+                    updatePosMap();
+                    break;
+                case "left":
+                    x -= speed;
+                    updatePosMap();
+                    break;
+                case "right":
+                    x += speed;
+                    updatePosMap();
+                    break;
+            }
+        } else {
+            setSpeed(0);
+        }
     }
 }

@@ -19,12 +19,21 @@ public abstract class Entity {
     //Tọa độ Y tính từ góc trái trên trong Canvas
     protected int x;
     protected int y;
+    protected boolean move = false;
     //Toa do bot den
     private int frX = 0;
     private int frY = 0;
 
     private String frDirection;
     public String direction = "left";
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
 
     //o dang dung
     protected int posX;
@@ -71,8 +80,8 @@ public abstract class Entity {
         soliArea.y = (int) (img.getHeight() - 35);
         soliArea.width = 30;
         soliArea.height = 30;
-        posX = (this.x + soliArea.x) / 40;
-        posY = (this.y + soliArea.y) / 40;
+        posX = xUnit;
+        posY = yUnit;
     }
 
     public int getSpeed() {
@@ -100,7 +109,7 @@ public abstract class Entity {
      * check cỏ của automove thử nghiệm.
      */
     public void checkGrass2(int x, int y) {
-        if (BombermanGame.tile[y][x] instanceof Grass && !(BombermanGame.tile[y][x] instanceof Bomber)) {
+        if (BombermanGame.tile[y][x] instanceof Grass) {
             if (y < posY) {
                 dirNew.add("up");
             }
@@ -128,7 +137,6 @@ public abstract class Entity {
                     checkGrass2(posX - 1, posY);
                     checkGrass2(posX + 1, posY);
                     if (dirNew.size() > 1) {
-                        System.out.println(dirNew.toString());
                         int k = (int) (Math.random() * 30) % dirNew.size();
                         direction = dirNew.get(k);
                         dirNew.clear();
@@ -145,8 +153,8 @@ public abstract class Entity {
                     }
                     break;
                 case "right":
+                    checkGrass2(posX - 1, posY);
                     checkGrass2(posX + 1, posY);
-                    checkGrass2(posX, posY - 1);
                     checkGrass2(posX, posY + 1);
                     if (dirNew.size() > 1) {
                         int k = (int) (Math.random() * 30) % dirNew.size();
@@ -155,9 +163,9 @@ public abstract class Entity {
                     }
                     break;
                 case "left":
+                    checkGrass2(posX + 1, posY);
                     checkGrass2(posX - 1, posY);
                     checkGrass2(posX, posY - 1);
-                    checkGrass2(posX, posY + 1);
                     if (dirNew.size() > 1) {
                         int k = (int) (Math.random() * 30) % dirNew.size();
                         direction = dirNew.get(k);

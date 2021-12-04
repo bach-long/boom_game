@@ -1,16 +1,10 @@
 package uet.oop.bomberman.Sound;
 
-import java.awt.*;
 import java.io.File;
-import java.net.URL;
 import java.util.*;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.util.Duration;
 
 import static javafx.scene.media.AudioClip.INDEFINITE;
@@ -31,7 +25,7 @@ public class SoundControl {
     public SoundControl(String soundName) {
         sounds = new HashMap<>();
 
-        directory = new File("C:\\tta\\boom_game\\res\\sound");
+        directory = new File("D:\\boom_game\\res\\sound");
 
         files = directory.listFiles();
 
@@ -62,7 +56,7 @@ public class SoundControl {
     }
 
     public void setInfinite(boolean isInfinite) {
-        if (isInfinite == true) {
+        if (isInfinite) {
             mediaPlayer.setCycleCount(INDEFINITE); // so luong chu ki  -vô hạn
         } else {
             mediaPlayer.setCycleCount(1);

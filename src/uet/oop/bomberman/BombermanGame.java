@@ -17,7 +17,6 @@ import uet.oop.bomberman.Collision.CollisionChecker;
 import uet.oop.bomberman.Sound.SoundControl;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.Sound.*;
 
 import java.awt.*;
 import java.io.FileInputStream;
@@ -33,6 +32,8 @@ public class BombermanGame extends Application {
     public static Button muteSoundButton;
     public static SoundControl backgroundMusicControl = new SoundControl("xmas");
     public static SoundControl bombSound = new SoundControl("explosion");
+    public static SoundControl confirm = new SoundControl("confirm");
+    public static SoundControl dead = new SoundControl("char_dead");
     public static boolean isStartGame = false;
     public static final int WIDTH = 31;
     public static final int HEIGHT = 13;
@@ -50,7 +51,9 @@ public class BombermanGame extends Application {
     public static Entity[][] item = new Entity[HEIGHT][WIDTH];
     public static Entity[][] bom = new Entity[HEIGHT][WIDTH];
     public static Entity[][] bot = new Entity[HEIGHT][WIDTH];
-    Bomber character = null;
+    public static Entity[][] Arrayboss = new Entity[HEIGHT][WIDTH];
+    public static Boss boss = null;
+    public static Bomber character = null;
     boolean creatMap = true;
 
 
@@ -63,13 +66,13 @@ public class BombermanGame extends Application {
         //tao am thanh
         backgroundMusicControl.setInfinite(true);
         backgroundMusicControl.setRunning(true);
-        backgroundMusicControl.playMedia();
+        //backgroundMusicControl.playMedia();
 
         //tao button mute
         muteSoundButton = new Button();
         muteSoundButton.setText("OFF - MUSIC");
 
-        /**muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
+        muteSoundButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (muteSoundButton.getText() == "OFF - MUSIC") {
@@ -84,7 +87,7 @@ public class BombermanGame extends Application {
                     backgroundMusicControl.playMedia();
                 }
             }
-        });.*/
+        });
 
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
@@ -130,7 +133,8 @@ public class BombermanGame extends Application {
     }
 
     public void createMap() throws FileNotFoundException {
-        InputStream level = new FileInputStream("C:\\tta\\boom_game\\res\\levels\\Boss_fight.txt");
+        //InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Level1.txt");
+        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Boss_fight.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -145,13 +149,13 @@ public class BombermanGame extends Application {
                 }
                 Entity object;
                 Entity object2;
-                if ((i + j) % 2 == 0) {
+                //if ((i + j) % 2 == 0) {
                     object2 = new Grass(j, i, Sprite.grass[0][0].getFxImage());
                     grass.add(object2);
-                } else {
-                    object2 = new Grass(j, i, Sprite.grass[0][2].getFxImage());
-                    grass.add(object2);
-                }
+                //} else {
+                  //  object2 = new Grass(j, i, Sprite.grass[0][2].getFxImage());
+                    //grass.add(object2);
+                //}
                 if (s.charAt(j) == '#') {
                     if (i == 0 || i == HEIGHT - 1 || j == 0 || j == WIDTH - 1) {
                         object = new Wall(j, i, Sprite.wall[0][0].getFxImage());
@@ -179,8 +183,8 @@ public class BombermanGame extends Application {
                     tile[i][j] = grass.get(0);
                 } else if (s.charAt(j) == 'B') {
                     object = new Boss(j, i, Sprite.boss[0][2].getFxImage());
-                    bot[i][j] = object;
-                    tile[i][j] = grass.get(0);
+                    Arrayboss[i][j] = object;
+                    boss = (Boss) object;
                 } else if (s.charAt(j) == '*') {
                     if ((i + j) % 2 == 0) {
                         object = new Brick(j, i, Sprite.wall[0][2].getFxImage());
@@ -199,7 +203,11 @@ public class BombermanGame extends Application {
                 } else if (s.charAt(j) == 'b') {
                     object = new BombItem(j, i, Sprite.items[1][2].getFxImage());
                     tile[i][j] = object;
-                } else if (s.charAt(j) == 's') {
+                }else if (s.charAt(j) == 'c') {
+                    object = new BomSao(j, i, Sprite.bomSao[0][2].getFxImage());
+                    bom[i][j] = object;
+                    object.collision = true;
+                }  else if (s.charAt(j) == 's') {
                     object = new SpeedItem(j, i, Sprite.items[0][2].getFxImage());
                     tile[i][j] = object;
                 } else if (s.charAt(j) == 'k') {
@@ -224,8 +232,12 @@ public class BombermanGame extends Application {
                 if (bot[i][j] != null) {
                     bot[i][j].update();
                 }
-                if (!(tile[i][j] instanceof Bomber))
+                if (!(tile[i][j] instanceof Bomber || tile[i][j] == null))
                     tile[i][j].update();
+                if (Arrayboss[i][j] != null) {
+                    boss.optimize(character);
+                    Arrayboss[i][j].update();
+                }
             }
         }
     }
@@ -235,7 +247,7 @@ public class BombermanGame extends Application {
         grass.forEach(g -> g.render(gc));
         for (int i = 0; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (!(tile[i][j] instanceof Grass)) {
+                if (!(tile[i][j] instanceof Grass || tile[i][j] == null)) {
                     tile[i][j].render(gc);
                 }
                 if (bom[i][j] != null) {
@@ -243,6 +255,9 @@ public class BombermanGame extends Application {
                 }
                 if (bot[i][j] != null) {
                     bot[i][j].render(gc);
+                }
+                if (Arrayboss[i][j] != null) {
+                    Arrayboss[i][j].render(gc);
                 }
             }
         }
