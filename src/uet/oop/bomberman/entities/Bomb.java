@@ -13,6 +13,7 @@ public class Bomb extends Entity {
     public int range = 1;
     boolean returnBom = true;
     private int indexExplosion = 2;
+    boolean wait = true;
 
     private int sprite = 0;
 
@@ -28,19 +29,15 @@ public class Bomb extends Entity {
          && BombermanGame.bot[posY][posX] == null) {
             collision = true;
         }
+        count++;
+        if (count > 17) {
+            count = 0;
+            sprite++;
+            if (sprite >= 3) sprite = 0;
+        }
         if (timeToExplosion > 0) {
             if (move) {
                 kickBomb();
-            }
-            count ++;
-            if (count > 2) {
-                count = 0;
-                sprite ++;
-            }
-            //sprite++;
-            /** lay 29 de ti chia 10 ra so < 3.*/
-            if (sprite >= 29) {
-                sprite = 0;
             }
             timeToExplosion --;
         } else if (timeToExplosion == 0) {
@@ -48,8 +45,7 @@ public class Bomb extends Entity {
             tonTai = false;
             CollisionChecker.gp.cChecker.checkCollisionBomb(this);
             if (BombermanGame.bombSound.isRunning()) {
-
-                BombermanGame.bombSound.playMedia();
+                BombermanGame.bombSound.playMedia(false);
             }
             timeToExplosion --;
         } else {
@@ -61,9 +57,14 @@ public class Bomb extends Entity {
     @Override
     public void render(GraphicsContext gc) {
         if (timeToExplosion > 0) {
-            setImg(Sprite.boom[0][sprite / 10].getFxImage());
+            setImg(Sprite.boom[0][sprite].getFxImage());
             gc.drawImage(img, x, y);
         } else if (timeToExplosion >= -29){
+            if (wait) {
+                sprite = 0;
+                count = 0;
+                wait = false;
+            }
             for(int i = posY - 1; i <= posY + 1; i++) {
                 for(int j = posX - 1; j <= posX + 1; j++) {
                     if (j > 0 && j < 30 && i > 0 && i < 12 && !(i == posY - 1
@@ -74,20 +75,22 @@ public class Bomb extends Entity {
                         if(!(BombermanGame.tile[i][j] instanceof Wall) && !(BombermanGame.tile[i][j] instanceof Bomber)
                                 && !(BombermanGame.tile[i][j] instanceof BombItem) && !(BombermanGame.tile[i][j] instanceof KickItem)
                                 && !(BombermanGame.tile[i][j] instanceof SpeedItem) && !(BombermanGame.tile[i][j] instanceof FlameItem)) {
-                            BombermanGame.tile[i][j] = new Grass(j, i, Sprite.grass[0][1].getFxImage());
+                            BombermanGame.tile[i][j] = null;
                         }
                     }
                 }
             }
-            gc.drawImage(Sprite.explosionBomb[8][Math.abs(timeToExplosion) / 10].getFxImage(), x, y);
+
+            gc.drawImage(Sprite.explosionBomb[8][2 - sprite].getFxImage(), x, y);
             for (int i = 1; i <= getRange(); i++) {
                 if (posX + i < 30) {
                     if (! (BombermanGame.tile[posY][posX + i] instanceof Wall)) {
                         if (i != getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[1][Math.abs(timeToExplosion) / 10].getFxImage(),
+
+                            gc.drawImage(Sprite.explosionBomb[1][2 - sprite].getFxImage(),
                                     posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
                         } else if (i == getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[5][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[5][2 - sprite].getFxImage(),
                                     posX * 40 + i * Sprite.SCALED_SIZE, posY * 40);
                         }
                     } else{
@@ -102,10 +105,10 @@ public class Bomb extends Entity {
                 if (posX - i >= 1) {
                     if (! (BombermanGame.tile[posY][posX - i] instanceof Wall)) {
                         if (i != getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[2][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[2][2 - sprite].getFxImage(),
                                     posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
                         } else if (i == getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[6][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[6][2 - sprite].getFxImage(),
                                     posX * 40 - i * Sprite.SCALED_SIZE, posY * 40);
                         }
                     } else {
@@ -120,10 +123,10 @@ public class Bomb extends Entity {
                 if (posY - i >= 1) {
                     if (! (BombermanGame.tile[posY - i][posX] instanceof Wall)) {
                         if (i != getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[0][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[0][2 - sprite].getFxImage(),
                                     posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
                         } else if (i == getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[4][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[4][2 - sprite].getFxImage(),
                                     posX * 40, posY * 40 - i * Sprite.SCALED_SIZE);
                         }
                     } else {
@@ -138,10 +141,10 @@ public class Bomb extends Entity {
                 if (posY + i < 12) {
                     if (! (BombermanGame.tile[posY + i][posX] instanceof Wall)) {
                         if (i != getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[3][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[3][2 - sprite].getFxImage(),
                                     posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
                         } else if (i == getRange()) {
-                            gc.drawImage(Sprite.explosionBomb[7][Math.abs(timeToExplosion) / 10].getFxImage(),
+                            gc.drawImage(Sprite.explosionBomb[7][2 - sprite].getFxImage(),
                                     posX * 40, posY * 40 + i * Sprite.SCALED_SIZE);
                         }
                     } else {

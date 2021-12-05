@@ -100,10 +100,15 @@ public class Bomber extends Entity {
                         if (maxBoom > 0) {
                             Bomb bomb = new Bomb((x + soliArea.x + soliArea.width / 2) / 40, (y + soliArea.y + soliArea.height / 2)
                                     / 40, Sprite.explosionBomb[3][1].getFxImage());
-                            BombermanGame.bom[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40]
-                                    = bomb;
-                            bomb.setRange(flame);
-                            maxBoom--;
+                            if (BombermanGame.bom[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40] == null) {
+                                BombermanGame.bom[(y + soliArea.y + soliArea.height / 2) / 40][(x + soliArea.x + soliArea.width / 2) / 40]
+                                        = bomb;
+                                bomb.setRange(flame);
+                                maxBoom--;
+                                if (BombermanGame.run.isRunning()) {
+                                    BombermanGame.run.playMedia(false);
+                                }
+                            }
                         }
                         break;
                     default:
@@ -193,7 +198,7 @@ public class Bomber extends Entity {
                 || BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof SpeedItem)) {
             /**am thanh.*/
             if (BombermanGame.confirm.isRunning()) {
-                BombermanGame.confirm.playMedia();
+                BombermanGame.confirm.playMedia(false);
             }
 
             if (BombermanGame.tile[(y + soliArea.y) / 40][(x + soliArea.x) / 40] instanceof FlameItem) {

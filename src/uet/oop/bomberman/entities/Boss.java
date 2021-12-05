@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class Boss extends Entity {
     boolean rage = false;
-    int hp = 70;
+    int hp = 200;
     String[] directions = {"up", "left", "down", "right"};
     int index = 0;
     int count = 0;
@@ -47,9 +47,10 @@ public class Boss extends Entity {
     public void optimize(Bomber a) {
         /**check va cham player. */
         if (a.getPosX() >= posX && a.getPosX() <= posX + 2 && a.getPosY() <= posY && a.getPosY() >= posY - 1) {
+            if (a.me > 1) a.me--;
+            if (a.me <= 1)
             a.checkDie = true;
         }
-        System.out.println(hp);
         rage = (hp <= 80 && hp >= 60) || (hp <= 40 && hp >= 20);
         if(!rage) {
             if(count1 > 500) {
@@ -88,7 +89,6 @@ public class Boss extends Entity {
                     if (min > distance_right) {
                         min = distance_right;
                     }
-                    //distance[1] = distance_right;
                 }
                 if (posX - 1 > 0) {
                     distance_left = Math.pow(posX - 1 - p_x, 2) + Math.pow(posY - 1 - p_y, 2);
@@ -109,7 +109,6 @@ public class Boss extends Entity {
                     if (min > distance_down) {
                         min = distance_down;
                     }
-                    //distance[3] = distance_down;
                 }
                 //Arrays.sort(distance);
                 if (min == distance_down) {
@@ -176,7 +175,10 @@ public class Boss extends Entity {
                         && i > 0 && i < 13 && j > 0 && j < 31) {
                     if (bombs[i][j] instanceof Bomb && !((Bomb) bombs[i][j]).getState()) {
                         hp -= 5;
+                        if (BombermanGame.botDead.isRunning())
+                        BombermanGame.botDead.playMedia(false);
                         bombs[i][j] = null;
+                        BombermanGame.character.maxBoom++;
                     }
                 }
             }

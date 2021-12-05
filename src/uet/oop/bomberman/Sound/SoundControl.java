@@ -24,25 +24,27 @@ public class SoundControl {
 
     public SoundControl(String soundName) {
         sounds = new HashMap<>();
-
         directory = new File("D:\\boom_game\\res\\sound");
-
         files = directory.listFiles();
-
         if (files != null) {
             for (File file: files) {
                 sounds.put(file.getName().substring(0, file.getName().length() - 4), file);
             }
         }
-
         this.soundName = soundName;
         media = new Media(sounds.get(soundName).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-
         running = true;
     }
 
-    public void playMedia() {
+    public void playMedia(boolean isInfinite) {
+        mediaPlayer = new MediaPlayer(media);
+        if (isInfinite) {
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(INDEFINITE); // so luong chu ki  - vô hạn
+        } else {
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(1);
+        }
         mediaPlayer.play();
     }
 
@@ -51,14 +53,12 @@ public class SoundControl {
         mediaPlayer.seek(Duration.seconds(0));
     }
 
-    public void resetMedia() {
-
-    }
-
     public void setInfinite(boolean isInfinite) {
         if (isInfinite) {
-            mediaPlayer.setCycleCount(INDEFINITE); // so luong chu ki  -vô hạn
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(INDEFINITE); // so luong chu ki  - vô hạn
         } else {
+            mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(1);
         }
     }

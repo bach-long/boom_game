@@ -57,7 +57,7 @@ public abstract class Entity {
     public boolean checkDie = false;
 
     protected double countDelay = 0;
-    protected double DELTA = 0.7;
+    public double DELTA = 0.7;
     Random random = new Random();
 
     public void setImg(Image img) {
@@ -153,9 +153,9 @@ public abstract class Entity {
                     }
                     break;
                 case "right":
-                    checkGrass2(posX - 1, posY);
                     checkGrass2(posX + 1, posY);
                     checkGrass2(posX, posY + 1);
+                    checkGrass2(posX, posY - 1);
                     if (dirNew.size() > 1) {
                         int k = (int) (Math.random() * 30) % dirNew.size();
                         direction = dirNew.get(k);
@@ -163,9 +163,9 @@ public abstract class Entity {
                     }
                     break;
                 case "left":
-                    checkGrass2(posX + 1, posY);
                     checkGrass2(posX - 1, posY);
                     checkGrass2(posX, posY - 1);
+                    checkGrass2(posX, posY + 1);
                     if (dirNew.size() > 1) {
                         int k = (int) (Math.random() * 30) % dirNew.size();
                         direction = dirNew.get(k);

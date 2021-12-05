@@ -111,7 +111,7 @@ public class CollisionChecker {
 
         if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
             if (num1 instanceof Bomber) {
-                BombermanGame.dead.playMedia();
+                BombermanGame.dead.playMedia(false);
                 if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
                 else num1.checkDie = true;
             } else
@@ -125,7 +125,7 @@ public class CollisionChecker {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
                     if (num1 instanceof Bomber) {
-                        BombermanGame.dead.playMedia();
+                        BombermanGame.dead.playMedia(false);
                         if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
                         else num1.checkDie = true;
                     } else
@@ -156,7 +156,7 @@ public class CollisionChecker {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
                     if (num1 instanceof Bomber) {
-                        BombermanGame.dead.playMedia();
+                        BombermanGame.dead.playMedia(false);
                         if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
                         else num1.checkDie = true;
                     } else
@@ -186,7 +186,7 @@ public class CollisionChecker {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
                     if (num1 instanceof Bomber) {
-                        BombermanGame.dead.playMedia();
+                        BombermanGame.dead.playMedia(false);
                         if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
                         else num1.checkDie = true;
                     } else
@@ -217,7 +217,7 @@ public class CollisionChecker {
                     break;
                 } else if ((num1 instanceof Bomber && num1.collision) || num1 instanceof Oneal || num1 instanceof Balloon) {
                     if (num1 instanceof Bomber) {
-                        BombermanGame.dead.playMedia();
+                        BombermanGame.dead.playMedia(false);
                         if (((Bomber) num1).me > 1) ((Bomber) num1).me--;
                         else num1.checkDie = true;
                     } else

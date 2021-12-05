@@ -28,7 +28,6 @@ public class Balloon extends Entity {
             collisionOn = false;
             CollisionChecker.gp.cChecker.checkTile(this);
             if (collisionOn) {
-                //posReturn();
                 switch (direction) {
                     case "up":
                         direction = "down";

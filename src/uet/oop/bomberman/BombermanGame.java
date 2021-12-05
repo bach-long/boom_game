@@ -30,12 +30,15 @@ import java.util.Scanner;
 
 public class BombermanGame extends Application {
     public static Button muteSoundButton;
-    public static SoundControl backgroundMusicControl = new SoundControl("xmas");
+    public static SoundControl backgroundMusicControl = new SoundControl("underwater");
     public static SoundControl bombSound = new SoundControl("explosion");
     public static SoundControl confirm = new SoundControl("confirm");
     public static SoundControl dead = new SoundControl("char_dead");
+    public static SoundControl run = new SoundControl("run");
+    public static SoundControl buttonPress = new SoundControl("button_press");
+    public static SoundControl botDead = new SoundControl("underwater");
     public static boolean isStartGame = false;
-    public static final int WIDTH = 31;
+    public static final int WIDTH = 15;
     public static final int HEIGHT = 13;
     public static final int SCREEN_FPS = 144;
     public static final int SCREEN_TICKS_PER_FRAME = 1000000000 / SCREEN_FPS;
@@ -64,9 +67,10 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) throws FileNotFoundException {
         //tao am thanh
-        backgroundMusicControl.setInfinite(true);
-        backgroundMusicControl.setRunning(true);
-        //backgroundMusicControl.playMedia();
+        //backgroundMusicControl.setInfinite(true);
+        //backgroundMusicControl.setRunning(true);
+        if (backgroundMusicControl.isRunning())
+        backgroundMusicControl.playMedia(true);
 
         //tao button mute
         muteSoundButton = new Button();
@@ -84,7 +88,7 @@ public class BombermanGame extends Application {
                     muteSoundButton.setText("OFF - MUSIC");
                     bombSound.setRunning(true);
                     backgroundMusicControl.setRunning(true);
-                    backgroundMusicControl.playMedia();
+                    backgroundMusicControl.playMedia(true);
                 }
             }
         });
@@ -92,16 +96,11 @@ public class BombermanGame extends Application {
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
-        // Tao root container
         Group root = new Group();
-        //root.getChildren().add(muteSoundButton);
         root.getChildren().add(canvas);
-
         // Tao scene
         Scene scene = new Scene(root);
         // Them scene vao stage
-
-
         stage.setScene(scene);
         stage.show();
         AnimationTimer timer = new AnimationTimer() {
@@ -134,7 +133,8 @@ public class BombermanGame extends Application {
 
     public void createMap() throws FileNotFoundException {
         //InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Level1.txt");
-        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Boss_fight.txt");
+        //InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\Boss_fight.txt");
+        InputStream level = new FileInputStream("D:\\boom_game\\res\\levels\\map1.txt");
         Scanner sc = new Scanner(level).useDelimiter("\\A");
         sc.nextLine();
         int i = 0;
@@ -173,6 +173,7 @@ public class BombermanGame extends Application {
                     tile[i][j] = object;
                     character = (Bomber) object;
                     object.collision = true;
+                    character.DELTA = 0;
                 } else if (s.charAt(j) == '1') {
                     object = new Balloon(j, i, Sprite.crep2[0][1].getFxImage());
                     bot[i][j] = object;
@@ -232,7 +233,7 @@ public class BombermanGame extends Application {
                 if (bot[i][j] != null) {
                     bot[i][j].update();
                 }
-                if (!(tile[i][j] instanceof Bomber || tile[i][j] == null))
+                if (!(/*tile[i][j] instanceof Bomber || */tile[i][j] == null))
                     tile[i][j].update();
                 if (Arrayboss[i][j] != null) {
                     boss.optimize(character);
